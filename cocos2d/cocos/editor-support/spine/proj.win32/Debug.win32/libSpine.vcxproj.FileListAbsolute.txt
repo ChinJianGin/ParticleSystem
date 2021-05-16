@@ -1,0 +1,4 @@
+D:\Github\GP-Project-1\proj.win32\Debug.win32\libSpine.pdb
+D:\Github\GP-Project-1\cocos2d\cocos\editor-support\spine\proj.win32\Debug.win32\libSpine.pdb
+D:\Github\Particlesystem\Particlesystem\proj.win32\Debug.win32\libSpine.pdb
+D:\Github\Particlesystem\Particlesystem\cocos2d\cocos\editor-support\spine\proj.win32\Debug.win32\libSpine.pdb
