@@ -10,7 +10,7 @@
 #define FALLING_TIME 2.5f
 #define MAX_HEIGHT 720.0f
 #define PIXEL_PERM (2.0f*MAX_HEIGHT/(9.8f*FALLING_TIME*FALLING_TIME))
-#define GRAVITY_Y(t,dt,g) ((g)*(t+0.5f*(dt)))  //已經經過 t 秒後，再經過 dt 時間內落下距離
+#define GRAVITY_Y(t,dt,g) ((g)*((t)+0.5f*(dt)))  //已經經過 t 秒後，再經過 dt 時間內落下距離
 
 #define LIFE_NOISE(f) ((f)*(1.0f-(rand()%2001/1000.0f)))
 //#define INTENSITY(f)  ( (f) >= 255 ? 255 : (f) )
@@ -84,6 +84,7 @@ bool CParticle::update(float dt)
 		}
 		break;
 	case FREE_FLY:
+
 		if (!_bVisible && _fElapsedTime >= _fDelayTime) {
 			_fElapsedTime = _fElapsedTime - _fDelayTime; // 重新開始計時
 			_bVisible = true;
@@ -194,115 +195,58 @@ bool CParticle::update(float dt)
 }
 
 
-void CParticle::setBehavior(int iType)
+void CParticle::setBehavior(CXParticle& type)
 {
 	float t;
-	_iType = iType;
-	switch (_iType) {
-	case STAY_FOR_TWOSECONDS:
-		_fVelocity = 0;
-		_fLifeTime = 2.5f + LIFE_NOISE(0.15f);
-		_fIntensity = 1;
-		_fOpacity = 255;
-		_fSpin = 0;
-		_fSize = 1;
-		_color = Color3B(64 + rand() % 128, 64 + rand() % 128, 64 + rand() % 128);
-		_fElapsedTime = 0;
-		_fDelayTime = 0;
-		_fGravity = 0;
-		_Particle->setOpacity(255);
-		_Particle->setScale(_fSize);
-		break;
-	case RANDOMS_FALLING:
-		_fVelocity = 5.0f + rand() % 10 / 10.0f; // 單位 M/Sec
-		_Direction.x = 0;
-		_Direction.y = -1;
-		_fLifeTime = 3.0f + LIFE_NOISE(0.15f);
-		_fIntensity = 1;
-		_fOpacity = 255;
-		_fSpin = 0;
-		_fSize = 1;
-		_color = Color3B(128 + rand() % 128, 128 + rand() % 128, 128 + rand() % 128);
-		_fElapsedTime = 0;
-		_fDelayTime = 0;
-		_fGravity = 0;
-		break;
-	case FREE_FLY:
-		_fVelocity = 5.0f + rand() % 10 / 10.0f; // 單位 M/Sec
+	
+	_fVelocity = type.getVelocity();
+	_fLifeTime = type.getLifeTime();
+	_fIntensity = type.getIntensity();
+	_fOpacity = type.getOpacity();
+	_fSpin = type.getSpin();
+	_fSize = type.getSize();
+	_color = type.getColor3B();
+	_fElapsedTime = type.getElapsedTime();
+	_fDelayTime = 0;
+	_fGravity = type.getGravity();
+	_Particle->setOpacity(_fOpacity);
+	_Particle->setScale(_fSize);
+	this->setDirection(type.getDir());
+	_iType = type.getType();
+	if (_iType == STAY_FOR_TWOSECONDS)
+	{
 		t = 2.0f * M_PI * (rand() % 1000) / 1000.0f;
 		_Direction.x = cosf(t);
 		_Direction.y = sinf(t);
-		_fLifeTime = 3.0f + LIFE_NOISE(0.15f);
-		_fIntensity = 1;
-		_fOpacity = 255;
-		_fSpin = 0;
-		_fSize = 1;
-		_color = Color3B(128 + rand() % 128, 128 + rand() % 128, 128 + rand() % 128);
-		_fElapsedTime = 0;
-		_fDelayTime = 0;
-		_fGravity = 0;
-		break;
-	case EXPLOSION:
-		_fVelocity = 15.0f + rand() % 10 / 10.0f;
+	}
+	else if (_iType == FREE_FLY)
+	{
 		t = 2.0f * M_PI * (rand() % 1000) / 1000.0f;
 		_Direction.x = cosf(t);
 		_Direction.y = sinf(t);
-		_fLifeTime = 1.5f + LIFE_NOISE(0.15f);
-		_fIntensity = 1;
-		_fOpacity = 255;
-		_fSpin = 0;
-		_fSize = 1;
-		_color = Color3B(64 + rand() % 128, 64 + rand() % 128,64 + rand() % 128);
-		//_color = Color3B(255, 255, 255);
-		_fElapsedTime = 0;
-		_fDelayTime = rand() % 100 / 1000.0f;
-		_fGravity = 0;
-		break;
-	case HEARTSHAPE:
-		_fVelocity = 1.0f;
+	}
+	else if (_iType == EXPLOSION)
+	{
+		t = 2.0f * M_PI * (rand() % 1000) / 1000.0f;
+		_Direction.x = cosf(t);
+		_Direction.y = sinf(t);			
+	}
+	else if (_iType == HEARTSHAPE)
+	{
 		t = 2.0f * M_PI * (rand() % 1000) / 1000.0f;
 		float sint, cost, cos2t, cos3t, cos4t, sin12t;
-		sint = sinf(t);  cost = cosf(t); cos2t = cosf(2*t); cos3t = cosf(3 * t); cos4t = cosf(4 * t);
-		sin12t = sin(t/12.0f);
-		_Direction.x = 16*sint*sint*sint;
-		_Direction.y = 13*cost - 5*cos2t - 2*cos3t - cos4t;
-		_fLifeTime = 1.5f + LIFE_NOISE(0.15f);
-		_fIntensity = 1;
-		_fOpacity = 255;
-		_fSpin = 0;
-		_fSize = 1;
-		_color = Color3B(128 + rand() % 128, 128 + rand() % 128, 128 + rand() % 128);
-		//_color = Color3B(255, 255, 255);
-		_fElapsedTime = 0;
-		_fDelayTime = rand() % 100 / 1000.0f;
-		_fGravity = 0;
-		break;
-	case BUTTERFLYSHAPE:
-		_fVelocity = 6.5f;
+		sint = sinf(t);  cost = cosf(t); cos2t = cosf(2 * t); cos3t = cosf(3 * t); cos4t = cosf(4 * t);
+		sin12t = sin(t / 12.0f);
+		_Direction.x = 16 * sint * sint * sint;
+		_Direction.y = 13 * cost - 5 * cos2t - 2 * cos3t - cos4t;
+	}
+	else if(_iType == BUTTERFLYSHAPE)
+	{
+		float sint, cost, cos4t, sin12t;
 		t = 2.0f * M_PI * (rand() % 1000) / 1000.0f;
 		sint = sinf(t);  cost = cosf(t); cos4t = cosf(4 * t); sin12t = sin(t / 12.0f);
-		_Direction.x = sint*(expf(cost) - 2 * cos4t - powf(sin12t, 5));
-		_Direction.y = cost*(expf(cost) - 2 * cos4t - powf(sin12t, 5));
-		_fLifeTime = 1.5f + LIFE_NOISE(0.15f);
-		_fIntensity = 1;
-		_fOpacity = 255;
-		_fSpin = 0;
-		_fSize = 1;
-		_color = Color3B(128 + rand() % 128, 128 + rand() % 128, 128 + rand() % 128);
-		//_color = Color3B(255, 255, 255);
-		_fElapsedTime = 0;
-		_fDelayTime = rand() % 100 / 1000.0f;
-		_fGravity = 0;
-		break;
-	case EMITTER_DEFAULT:
-		_fIntensity = 1;
-		_fOpacity = 255;
-		_fSize = 1;
-		_color = Color3B(rand() % 128, rand() % 128, 128 + rand() % 128);
-		_fElapsedTime = 0;
-		_fDelayTime = 0;
-		_Particle->setScale(_fSize);
-		break;
+		_Direction.x = sint * (expf(cost) - 2 * cos4t - powf(sin12t, 5));
+		_Direction.y = cost * (expf(cost) - 2 * cos4t - powf(sin12t, 5));
 	}
 }
 void CParticle::setLifetime(const float lt) {

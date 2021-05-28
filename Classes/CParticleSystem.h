@@ -3,6 +3,8 @@
 
 #include "cocos2d.h"
 #include "CParticle.h"
+#include "CXParticle.h"
+#include "flyweightBehavior/flyweight_factory.h"
 #include <list>
 
 using namespace std;
@@ -19,6 +21,8 @@ private:
 	int _iType;  // ヘ玡北だ笲笆家Α琌贺篈
 
 	bool _bEmitterOn; // Emitter 琌陪ボ
+
+	Flyweight_Factory* _BehaviorManager;
 
 public:
 	// Emitter 砞﹚闽把计

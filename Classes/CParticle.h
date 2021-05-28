@@ -10,6 +10,7 @@
 
 #define EMITTER_DEFAULT 99
 #include "cocos2d.h"
+#include "CXParticle.h"
 
 USING_NS_CC;
 
@@ -45,12 +46,12 @@ public:
 	bool update(float dt);
 	void setPosition(const cocos2d::Point &inPos);
 	void setColor(const cocos2d::Color3B& color);
-	void setBehavior(int iType); // 設定分子產生的起始行為模式
+	void setBehavior(CXParticle& type); // 設定分子產生的起始行為模式
 	void setVisible();
 	void setGravity(const float fGravity);
 	void setVelocity(const float v) { _fVelocity = v; }
 	void setLifetime(const float lt);
-	void setDirection(const cocos2d::Point pt) { _Direction = pt; }
+	void setDirection(const cocos2d::Point& pt) { _Direction = pt; }
 	void setSize(float s) { _fSize = s; _Particle->setScale(_fSize); }
 
 	void setOpacity(float op);

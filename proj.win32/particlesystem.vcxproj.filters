@@ -13,6 +13,9 @@
     <Filter Include="src\common">
       <UniqueIdentifier>{d7f94b16-da34-457d-a4c6-b81f3d20fd11}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\flyweightBehavior">
+      <UniqueIdentifier>{d0462841-8bfc-44d6-a2f2-03b5d72119bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -39,6 +42,15 @@
     <ClCompile Include="..\Classes\cuivew.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\CXParticle.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\flyweightBehavior\ConcreteBehavior.cpp">
+      <Filter>src\flyweightBehavior</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\flyweightBehavior\flyweight_factory.cpp">
+      <Filter>src\flyweightBehavior</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -64,6 +76,18 @@
     </ClInclude>
     <ClInclude Include="..\Classes\cuiview.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\CXParticle.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\flyweightBehavior\flyweight.h">
+      <Filter>src\flyweightBehavior</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\flyweightBehavior\ConcreteBehavior.h">
+      <Filter>src\flyweightBehavior</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\flyweightBehavior\flyweight_factory.h">
+      <Filter>src\flyweightBehavior</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

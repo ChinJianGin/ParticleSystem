@@ -17,6 +17,7 @@ void CParticleSystem::setEmitter(bool bEm)
 
 void CParticleSystem::init(cocos2d::Scene &stage)
 {
+	_BehaviorManager = new Flyweight_Factory();
 	_iFree = NUMBER_PARTICLES;
 	_iInUsed = 0;
 	_pParticles = new CParticle[NUMBER_PARTICLES]; // 取得所需要的 particle 空間
@@ -40,7 +41,7 @@ void CParticleSystem::update(float dt)
 				// 根據 Emitter 的相關參數，設定所產生分子的參數
 				if (_iFree != 0) {
 					get = _FreeList.front();
-					get->setBehavior(EMITTER_DEFAULT);
+					get->setBehavior(*(_BehaviorManager->getParticleBehavior(EMITTER_DEFAULT)));
 					get->setVelocity(_fVelocity);
 					get->setLifetime(_fLifeTime);
 					get->setGravity(_fGravity);
@@ -119,7 +120,7 @@ void CParticleSystem::onTouchesBegan(const cocos2d::Point &touchPoint)
 		// 從 _FreeList 取得一個分子給放到 _InUsed
 		if (_iFree != 0) {
 			get = _FreeList.front();
-			get->setBehavior(STAY_FOR_TWOSECONDS);
+			get->setBehavior(*(_BehaviorManager->getParticleBehavior(STAY_FOR_TWOSECONDS)));
 			get->setPosition(touchPoint);
 			get->setGravity(_fGravity);
 			get->setColor(Color3B(_fRed, _fGreen, _fBlue));
@@ -134,7 +135,7 @@ void CParticleSystem::onTouchesBegan(const cocos2d::Point &touchPoint)
 	case RANDOMS_FALLING :
 		if (_iFree != 0) {
 			get = _FreeList.front();
-			get->setBehavior(RANDOMS_FALLING);
+			get->setBehavior(*(_BehaviorManager->getParticleBehavior(RANDOMS_FALLING)));
 			get->setPosition(touchPoint);
 			get->setGravity(_fGravity);
 			get->setColor(Color3B(_fRed, _fGreen, _fBlue));
@@ -150,7 +151,7 @@ void CParticleSystem::onTouchesBegan(const cocos2d::Point &touchPoint)
 		// 從 _FreeList 取得一個分子給放到 _InUsed
 		if (_iFree != 0) {
 			get = _FreeList.front();
-			get->setBehavior(FREE_FLY);
+			get->setBehavior(*(_BehaviorManager->getParticleBehavior(FREE_FLY)));
 			get->setPosition(touchPoint);
 			get->setGravity(_fGravity);
 			get->setColor(Color3B(_fRed, _fGreen, _fBlue));
@@ -167,7 +168,7 @@ void CParticleSystem::onTouchesBegan(const cocos2d::Point &touchPoint)
 		if (_iFree > 100) {
 			for (int i = 0; i < 100; i++) {
 				get = _FreeList.front();
-				get->setBehavior(EXPLOSION);
+				get->setBehavior(*(_BehaviorManager->getParticleBehavior(EXPLOSION)));
 				get->setPosition(touchPoint);
 				get->setGravity(_fGravity);
 				get->setColor(Color3B(_fRed, _fGreen, _fBlue));
@@ -185,7 +186,7 @@ void CParticleSystem::onTouchesBegan(const cocos2d::Point &touchPoint)
 		if (_iFree > 150) {
 			for (int i = 0; i < 150; i++) {
 				get = _FreeList.front();
-				get->setBehavior(HEARTSHAPE);
+				get->setBehavior(*(_BehaviorManager->getParticleBehavior(HEARTSHAPE)));
 				get->setPosition(touchPoint);
 				get->setGravity(_fGravity);
 				get->setColor(Color3B(_fRed, _fGreen, _fBlue));
@@ -203,7 +204,7 @@ void CParticleSystem::onTouchesBegan(const cocos2d::Point &touchPoint)
 		if (_iFree > 150) {
 			for (int i = 0; i < 150; i++) {
 				get = _FreeList.front();
-				get->setBehavior(BUTTERFLYSHAPE);
+				get->setBehavior(*(_BehaviorManager->getParticleBehavior(BUTTERFLYSHAPE)));
 				get->setPosition(touchPoint);
 				get->setGravity(_fGravity);
 				get->setColor(Color3B(_fRed, _fGreen, _fBlue));
@@ -228,7 +229,7 @@ void CParticleSystem::onTouchesMoved(const cocos2d::Point &touchPoint)
 		// 從 _FreeList 取得一個分子給放到 _InUsed
 		if (_iFree != 0) {
 			get = _FreeList.front();
-			get->setBehavior(STAY_FOR_TWOSECONDS);
+			get->setBehavior(*(_BehaviorManager->getParticleBehavior(STAY_FOR_TWOSECONDS)));
 			get->setPosition(touchPoint);
 			get->setGravity(_fGravity);
 			get->setColor(Color3B(_fRed, _fGreen, _fBlue));
@@ -243,7 +244,7 @@ void CParticleSystem::onTouchesMoved(const cocos2d::Point &touchPoint)
 	case RANDOMS_FALLING:
 		if (_iFree != 0) {
 			get = _FreeList.front();
-			get->setBehavior(RANDOMS_FALLING);
+			get->setBehavior(*(_BehaviorManager->getParticleBehavior(RANDOMS_FALLING)));
 			get->setPosition(touchPoint);
 			get->setGravity(_fGravity);
 			get->setColor(Color3B(_fRed, _fGreen, _fBlue));
@@ -259,7 +260,7 @@ void CParticleSystem::onTouchesMoved(const cocos2d::Point &touchPoint)
 		// 從 _FreeList 取得一個分子給放到 _InUsed
 		if (_iFree != 0) {
 			get = _FreeList.front();
-			get->setBehavior(FREE_FLY);
+			get->setBehavior(*(_BehaviorManager->getParticleBehavior(FREE_FLY)));
 			get->setPosition(touchPoint);
 			get->setGravity(_fGravity);
 			get->setColor(Color3B(_fRed, _fGreen, _fBlue));
