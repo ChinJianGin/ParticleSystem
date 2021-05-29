@@ -20,6 +20,7 @@ private:
 	bool _bTouched;	// 是否被按下
 	bool _bSwitchOn;// 按鈕是否再開啟狀態
 	bool _bVisible; // 是否顯示
+	const char* _pngName;
 
 public:
 	CSwitchButton();
@@ -31,7 +32,7 @@ public:
 	void setVisible(bool bVis);
 	void setScale(float scale);
 	bool getStatus();
-
+	const char* getBtnSprite();
 };
 
 

@@ -147,16 +147,75 @@ void CUIView::init()
     TypeSlider->addEventListener(CC_CALLBACK_2(CUIView::TypeEvent, this));
     TypeSlider->setMaxPercent(100); 	// 將 0 到 100 對應到 0 到 360 之間
     _TypeBMValue = dynamic_cast<cocos2d::ui::TextBMFont*>(_uiRoot->getChildByName("TypeBMFont"));
+
+    //Texture Flare
+    emiterpos = dynamic_cast<Sprite*>(_uiRoot->getChildByName("flare"));
+    loc = emiterpos->getPosition();
+    emiterpos->setVisible(false);
+    _TexturSwitchBtn[0] = CSwitchButton::create();
+    _TexturSwitchBtn[0]->setButtonInfo("flare.png", "flare.png", "emitteron.png", loc);
+    _stage->addChild(_TexturSwitchBtn[0], 2);
+
+    //Texture Bubble
+    emiterpos = dynamic_cast<Sprite*>(_uiRoot->getChildByName("bubble"));
+    loc = emiterpos->getPosition();
+    emiterpos->setVisible(false);
+    _TexturSwitchBtn[1] = CSwitchButton::create();
+    _TexturSwitchBtn[1]->setButtonInfo("bubble.png", "bubble.png", "emitteron.png", loc);
+    _stage->addChild(_TexturSwitchBtn[1], 2);
+
+    //Texture Circle
+    emiterpos = dynamic_cast<Sprite*>(_uiRoot->getChildByName("circle"));
+    loc = emiterpos->getPosition();
+    emiterpos->setVisible(false);
+    _TexturSwitchBtn[2] = CSwitchButton::create();
+    _TexturSwitchBtn[2]->setButtonInfo("circle.png", "circle.png", "emitteron.png", loc);
+    _stage->addChild(_TexturSwitchBtn[2], 2);
+
+    //Texture Spark
+    emiterpos = dynamic_cast<Sprite*>(_uiRoot->getChildByName("spark"));
+    loc = emiterpos->getPosition();
+    emiterpos->setVisible(false);
+    _TexturSwitchBtn[3] = CSwitchButton::create();
+    _TexturSwitchBtn[3]->setButtonInfo("spark.png", "spark.png", "emitteron.png", loc);
+    _stage->addChild(_TexturSwitchBtn[3], 2);
+
+    //Texture Raindrop
+    emiterpos = dynamic_cast<Sprite*>(_uiRoot->getChildByName("raindrop"));
+    loc = emiterpos->getPosition();
+    emiterpos->setVisible(false);
+    _TexturSwitchBtn[4] = CSwitchButton::create();
+    _TexturSwitchBtn[4]->setButtonInfo("raindrop.png", "raindrop.png", "emitteron.png", loc);
+    _stage->addChild(_TexturSwitchBtn[4], 2);
+
+    //Texture Comet
+    emiterpos = dynamic_cast<Sprite*>(_uiRoot->getChildByName("comet"));
+    loc = emiterpos->getPosition();
+    emiterpos->setVisible(false);
+    _TexturSwitchBtn[5] = CSwitchButton::create();
+    _TexturSwitchBtn[5]->setButtonInfo("comet.png", "comet.png", "emitteron.png", loc);
+    _stage->addChild(_TexturSwitchBtn[5], 2);
+
+    //Texture Cloud
+    emiterpos = dynamic_cast<Sprite*>(_uiRoot->getChildByName("cloud"));
+    loc = emiterpos->getPosition();
+    emiterpos->setVisible(false);
+    _TexturSwitchBtn[6] = CSwitchButton::create();
+    _TexturSwitchBtn[6]->setButtonInfo("cloud.png", "cloud.png", "emitteron.png", loc);
+    _stage->addChild(_TexturSwitchBtn[6], 2);
 }
 
 
 void CUIView::onTouchBegan(const cocos2d::Point& tPoint)
 {
+    int i = 0;
+    bool texturBtn = false;
     //顯示 Emitter 時，可拖曳該圖式
-    if (_bEmitterOn) _EmitterSprite->touchesBegan(tPoint);
-
+    if (_bEmitterOn) _EmitterSprite->touchesBegan(tPoint);          
+    for(int i = 0; i < TEXTURE_AMOUNT && !texturBtn; i++)
+        texturBtn = _TexturSwitchBtn[i]->touchesBegan(tPoint);
     // 沒有顯示 Emitter，而且沒有按在 Emitter 切換按鈕上，才讓 touch 可以點選顯示分子
-    if (!_emitterSwitchBtn->touchesBegan(tPoint) && !_bEmitterOn) _ParticleControl->onTouchesBegan(tPoint);
+    if (!_emitterSwitchBtn->touchesBegan(tPoint) && !_bEmitterOn && !texturBtn) _ParticleControl->onTouchesBegan(tPoint);
 
 }
 
@@ -190,7 +249,14 @@ void CUIView::onTouchEnded(const cocos2d::Point& tPoint)
         }
         _ParticleControl->setEmitter(_bEmitterOn); // 更新控制系統中的 Emitter 狀態
     }
-
+    for (int i = 0; i < TEXTURE_AMOUNT; i++)
+    {
+        if (_TexturSwitchBtn[i]->touchesEnded(tPoint))
+        {
+          _ParticleControl->setPngName(*(_TexturSwitchBtn[i]->getBtnSprite()));
+        }
+    }
+    
 }
 
 void CUIView::GravityEvent(cocos2d::Ref* sender, cocos2d::ui::Slider::EventType type)

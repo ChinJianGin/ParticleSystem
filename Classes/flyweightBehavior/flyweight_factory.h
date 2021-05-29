@@ -10,9 +10,10 @@ using namespace std;
 class Flyweight_Factory
 {
 public:
-	Flyweight_Factory();
+	Flyweight_Factory(){}
 	~Flyweight_Factory();
 	CXParticle* getParticleBehavior(const int key);
+	CXParticle* getParticleBehavior(const int key, CXParticle& Behavior);
 private:
 	map<int, CXParticle*> ParticleBehavior;
 };

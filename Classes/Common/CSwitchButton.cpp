@@ -24,6 +24,7 @@ CSwitchButton::CSwitchButton()
 
 void CSwitchButton::setButtonInfo(const char *offImg, const char *onImg, const char *tdImg, const cocos2d::Point locPt)
 {
+	_pngName = offImg;
 	_SwitchOffPic = Sprite::createWithSpriteFrameName(offImg);
 	_SwitchTDPic  = Sprite::createWithSpriteFrameName(tdImg);
 	_SwitchOnPic = Sprite::createWithSpriteFrameName(onImg);
@@ -129,4 +130,9 @@ void CSwitchButton::setScale(float scale)
 bool CSwitchButton::getStatus()
 {
 	return(_bSwitchOn); // 傳回目前按鈕的狀態為開或是關
+}
+
+const char* CSwitchButton::getBtnSprite()
+{
+	return _pngName;
 }

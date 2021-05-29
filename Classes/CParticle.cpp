@@ -208,46 +208,11 @@ void CParticle::setBehavior(CXParticle& type)
 	_color = type.getColor3B();
 	_fElapsedTime = type.getElapsedTime();
 	_fDelayTime = 0;
+	this->setDirection(type.getDir());
 	_fGravity = type.getGravity();
 	_Particle->setOpacity(_fOpacity);
 	_Particle->setScale(_fSize);
-	this->setDirection(type.getDir());
 	_iType = type.getType();
-	if (_iType == STAY_FOR_TWOSECONDS)
-	{
-		t = 2.0f * M_PI * (rand() % 1000) / 1000.0f;
-		_Direction.x = cosf(t);
-		_Direction.y = sinf(t);
-	}
-	else if (_iType == FREE_FLY)
-	{
-		t = 2.0f * M_PI * (rand() % 1000) / 1000.0f;
-		_Direction.x = cosf(t);
-		_Direction.y = sinf(t);
-	}
-	else if (_iType == EXPLOSION)
-	{
-		t = 2.0f * M_PI * (rand() % 1000) / 1000.0f;
-		_Direction.x = cosf(t);
-		_Direction.y = sinf(t);			
-	}
-	else if (_iType == HEARTSHAPE)
-	{
-		t = 2.0f * M_PI * (rand() % 1000) / 1000.0f;
-		float sint, cost, cos2t, cos3t, cos4t, sin12t;
-		sint = sinf(t);  cost = cosf(t); cos2t = cosf(2 * t); cos3t = cosf(3 * t); cos4t = cosf(4 * t);
-		sin12t = sin(t / 12.0f);
-		_Direction.x = 16 * sint * sint * sint;
-		_Direction.y = 13 * cost - 5 * cos2t - 2 * cos3t - cos4t;
-	}
-	else if(_iType == BUTTERFLYSHAPE)
-	{
-		float sint, cost, cos4t, sin12t;
-		t = 2.0f * M_PI * (rand() % 1000) / 1000.0f;
-		sint = sinf(t);  cost = cosf(t); cos4t = cosf(4 * t); sin12t = sin(t / 12.0f);
-		_Direction.x = sint * (expf(cost) - 2 * cos4t - powf(sin12t, 5));
-		_Direction.y = cost * (expf(cost) - 2 * cos4t - powf(sin12t, 5));
-	}
 }
 void CParticle::setLifetime(const float lt) {
 	_fLifeTime = lt + LIFE_NOISE(0.15f);;
@@ -290,3 +255,7 @@ void CParticle::setOpacity(float op)
 	_fOpacity = op;
 }
 
+void CParticle::setParticleTexture(const std::string& pngName)
+{
+	_Particle->setSpriteFrame(pngName);
+}

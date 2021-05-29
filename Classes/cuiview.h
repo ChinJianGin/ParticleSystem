@@ -1,4 +1,5 @@
 #pragma once
+#define TEXTURE_AMOUNT 7
 
 #include "cocos2d.h"
 #include "ui/CocosGUI.h" // For Cocos Studio 控制項元件
@@ -38,6 +39,9 @@ private:
 
 	// 指向 Particle System 的指標物件
 	CParticleSystem* _ParticleControl;
+
+	//Change Texture
+	CSwitchButton* _TexturSwitchBtn[TEXTURE_AMOUNT];
 
 public:
 	CUIView();

@@ -55,6 +55,9 @@ public:
 	void setSize(float s) { _fSize = s; _Particle->setScale(_fSize); }
 
 	void setOpacity(float op);
+
+	//Set texture
+	void setParticleTexture(const std::string& pngName);
 };
 
 #endif

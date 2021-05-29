@@ -51,7 +51,8 @@ public:
 	float getSize();
 	float getGravity();
 	cocos2d::Color3B getColor3B();
-	cocos2d::Point getDir();
+	virtual cocos2d::Point getDir() = 0;
+	cocos2d::Point GetDir();
 	float getElapsedTime();
 	int getType();
 	
