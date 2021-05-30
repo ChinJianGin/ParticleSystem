@@ -26,6 +26,7 @@ CUIView::CUIView()
     _EmitterSprite = nullptr;
     _emitterSwitchBtn = nullptr;
     _bEmitterOn = false;
+    _differOn = false;
 }
 
 void CUIView::setModel(CParticleSystem& model)
@@ -203,6 +204,14 @@ void CUIView::init()
     _TexturSwitchBtn[6] = CSwitchButton::create();
     _TexturSwitchBtn[6]->setButtonInfo("cloud.png", "cloud.png", "emitteron.png", loc);
     _stage->addChild(_TexturSwitchBtn[6], 2);
+
+    //Effect Lambda
+    emiterpos = dynamic_cast<Sprite*>(_uiRoot->getChildByName("emitteroff"));
+    loc = emiterpos->getPosition();
+    emiterpos->setVisible(false);
+    _DifferentEffect[0] = CSwitchButton::create();
+    _DifferentEffect[0]->setButtonInfo("emitteroff.png", "emitteroff.png", "emitteron.png", loc);
+    _stage->addChild(_DifferentEffect[0], 2);
 }
 
 
@@ -215,8 +224,13 @@ void CUIView::onTouchBegan(const cocos2d::Point& tPoint)
     for(int i = 0; i < TEXTURE_AMOUNT && !texturBtn; i++)
         texturBtn = _TexturSwitchBtn[i]->touchesBegan(tPoint);
     // 沒有顯示 Emitter，而且沒有按在 Emitter 切換按鈕上，才讓 touch 可以點選顯示分子
-    if (!_emitterSwitchBtn->touchesBegan(tPoint) && !_bEmitterOn && !texturBtn) _ParticleControl->onTouchesBegan(tPoint);
-
+    if (!_emitterSwitchBtn->touchesBegan(tPoint) && !_bEmitterOn && !_DifferentEffect[0]->touchesBegan(tPoint) && !texturBtn) _ParticleControl->onTouchesBegan(tPoint);
+    if (_DifferentEffect[0]->touchesEnded(tPoint) && !_bEmitterOn)
+    {
+        _differOn = _DifferentEffect[0]->touchesEnded(tPoint);
+        _ParticleControl->setType(LAMBDA);
+        _ParticleControl->onTouchesBegan(tPoint);
+    }
 }
 
 void CUIView::onTouchMoved(const cocos2d::Point& tPoint)
@@ -255,8 +269,12 @@ void CUIView::onTouchEnded(const cocos2d::Point& tPoint)
         {
           _ParticleControl->setPngName(*(_TexturSwitchBtn[i]->getBtnSprite()));
         }
+    } 
+    if (_differOn)
+    {
+        _differOn = false;
+        _DifferentEffect[0]->touchesEnded(tPoint);
     }
-    
 }
 
 void CUIView::GravityEvent(cocos2d::Ref* sender, cocos2d::ui::Slider::EventType type)

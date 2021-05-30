@@ -7,6 +7,8 @@
 #define EXPLOSION 3				// 噴射出圓形的煙火
 #define HEARTSHAPE 4			// 噴射出心型的煙火
 #define BUTTERFLYSHAPE	5		// 噴射出蝴蝶外型的煙火
+#define LAMBDA 6				// Draw Lambda Icon
+#define SPLIT 7
 
 #define EMITTER_DEFAULT 99
 #include "cocos2d.h"
@@ -52,7 +54,6 @@ public:
 	float getGravity();
 	cocos2d::Color3B getColor3B();
 	virtual cocos2d::Point getDir() = 0;
-	cocos2d::Point GetDir();
 	float getElapsedTime();
 	int getType();
 	

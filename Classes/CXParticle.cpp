@@ -83,16 +83,3 @@ cocos2d::Color3B CXParticle::getColor3B()
 	return _color;
 }
 
-//cocos2d::Point CXParticle::getDir()
-//{
-//	return _Direction;
-//}
-
-cocos2d::Point CXParticle::GetDir()
-{
-	float t;
-	t = 2.0f * M_PI * (rand() % 1000) / 1000.0f;
-	_Direction.x = cosf(t);
-	_Direction.y = sinf(t);
-	return _Direction;
-}

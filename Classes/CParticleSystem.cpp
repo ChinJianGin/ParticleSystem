@@ -25,8 +25,11 @@ void CParticleSystem::init(cocos2d::Scene &stage)
 	_BehaviorManager->getParticleBehavior(3, *(new Explosion));
 	_BehaviorManager->getParticleBehavior(4, *(new HeartShape));
 	_BehaviorManager->getParticleBehavior(5, *(new Butterfly));
+	_BehaviorManager->getParticleBehavior(6, *(new Lambda));
 	_BehaviorManager->getParticleBehavior(99, *(new Emitter_Default));
 	_iFree = NUMBER_PARTICLES;
+	_VisibleSize = Director::getInstance()->getVisibleSize();
+	_origin = Director::getInstance()->getVisibleOrigin();
 	_iInUsed = 0;
 	_pParticles = new CParticle[NUMBER_PARTICLES]; // 取得所需要的 particle 空間
 	 // 讀入儲存多張圖片的 plist 檔
@@ -65,6 +68,7 @@ void CParticleSystem::update(float dt)
 					get->setOpacity(_fOpacity);
 					get->setLifetime(_fLifeTime);
 					get->setParticleTexture(_pngName);
+					get->setSpin(_fSpin);
 					get->setSize(0.125f);
 					// 根據 _fSpread 與 _vDir 產生方向
 					float t = (rand() % 1001) / 1000.0f; // 產生介於 0 到 1 間的數
@@ -143,6 +147,7 @@ void CParticleSystem::onTouchesBegan(const cocos2d::Point &touchPoint)
 			get->setOpacity(_fOpacity);
 			get->setLifetime(_fLifeTime);
 			get->setParticleTexture(_pngName);
+			get->setSpin(_fSpin);
 			_FreeList.pop_front();
 			_InUsedList.push_front(get);
 			_iFree--; _iInUsed++;
@@ -159,6 +164,7 @@ void CParticleSystem::onTouchesBegan(const cocos2d::Point &touchPoint)
 			get->setOpacity(_fOpacity);
 			get->setLifetime(_fLifeTime);
 			get->setParticleTexture(_pngName);
+			get->setSpin(_fSpin);
 			_FreeList.pop_front();
 			_InUsedList.push_front(get);
 			_iFree--; _iInUsed++;
@@ -176,6 +182,7 @@ void CParticleSystem::onTouchesBegan(const cocos2d::Point &touchPoint)
 			get->setOpacity(_fOpacity);
 			get->setLifetime(_fLifeTime);
 			get->setParticleTexture(_pngName);
+			get->setSpin(_fSpin);
 			_FreeList.pop_front();
 			_InUsedList.push_front(get);
 			_iFree--; _iInUsed++;
@@ -194,6 +201,7 @@ void CParticleSystem::onTouchesBegan(const cocos2d::Point &touchPoint)
 				get->setOpacity(_fOpacity);
 				get->setLifetime(_fLifeTime);
 				get->setParticleTexture(_pngName);
+				get->setSpin(_fSpin);
 				_FreeList.pop_front();
 				_InUsedList.push_front(get);
 				_iFree--; _iInUsed++;
@@ -213,6 +221,7 @@ void CParticleSystem::onTouchesBegan(const cocos2d::Point &touchPoint)
 				get->setOpacity(_fOpacity);
 				get->setLifetime(_fLifeTime);
 				get->setParticleTexture(_pngName);
+				get->setSpin(_fSpin);
 				_FreeList.pop_front();
 				_InUsedList.push_front(get);
 				_iFree--; _iInUsed++;
@@ -232,10 +241,31 @@ void CParticleSystem::onTouchesBegan(const cocos2d::Point &touchPoint)
 				get->setOpacity(_fOpacity);
 				get->setLifetime(_fLifeTime);
 				get->setParticleTexture(_pngName);
+				get->setSpin(_fSpin);
 				_FreeList.pop_front();
 				_InUsedList.push_front(get);
 				_iFree--; _iInUsed++;
 			}
+		}
+		else return;// 沒有分子, 所以就不提供
+		break;
+	case LAMBDA:
+		if (_iFree > 150) {
+			for (int i = 0; i < 150; i++) {
+				get = _FreeList.front();
+				get->setBehavior(*(_BehaviorManager->getParticleBehavior(LAMBDA)));
+				get->setPosition(Vec2(_VisibleSize.width / 2 + _origin.x, _VisibleSize.height / 2 + _origin.y));
+				get->setGravity(_fGravity);
+				get->setColor(Color3B(_fRed, _fGreen, _fBlue));
+				get->setOpacity(_fOpacity);
+				get->setLifetime(_fLifeTime);
+				get->setParticleTexture(_pngName);
+				get->setSpin(_fSpin);
+				_FreeList.pop_front();
+				_InUsedList.push_front(get);
+				_iFree--; _iInUsed++;
+			}
+			
 		}
 		else return;// 沒有分子, 所以就不提供
 		break;
@@ -258,6 +288,7 @@ void CParticleSystem::onTouchesMoved(const cocos2d::Point &touchPoint)
 			get->setOpacity(_fOpacity);
 			get->setLifetime(_fLifeTime);
 			get->setParticleTexture(_pngName);
+			get->setSpin(_fSpin);
 			_FreeList.pop_front();
 			_InUsedList.push_front(get);
 			_iFree--; _iInUsed++;
@@ -274,6 +305,7 @@ void CParticleSystem::onTouchesMoved(const cocos2d::Point &touchPoint)
 			get->setOpacity(_fOpacity);
 			get->setLifetime(_fLifeTime);
 			get->setParticleTexture(_pngName);
+			get->setSpin(_fSpin);
 			_FreeList.pop_front();
 			_InUsedList.push_front(get);
 			_iFree--; _iInUsed++;
@@ -291,6 +323,7 @@ void CParticleSystem::onTouchesMoved(const cocos2d::Point &touchPoint)
 			get->setOpacity(_fOpacity);
 			get->setLifetime(_fLifeTime);
 			get->setParticleTexture(_pngName);
+			get->setSpin(_fSpin);
 			_FreeList.pop_front();
 			_InUsedList.push_front(get);
 			_iFree--; _iInUsed++;

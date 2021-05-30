@@ -24,6 +24,9 @@ private:
 
 	Flyweight_Factory* _BehaviorManager;
 
+	Size _VisibleSize;
+	Vec2 _origin;
+
 public:
 	// Emitter 設定的相關參數
 	cocos2d::Point _emitterPt;// Emitter 的位置	

@@ -1,5 +1,6 @@
 #pragma once
 #define TEXTURE_AMOUNT 7
+#define EFFECT_AMOUNT 1
 
 #include "cocos2d.h"
 #include "ui/CocosGUI.h" // For Cocos Studio 控制項元件
@@ -42,6 +43,10 @@ private:
 
 	//Change Texture
 	CSwitchButton* _TexturSwitchBtn[TEXTURE_AMOUNT];
+
+	//Different Particle effect
+	CSwitchButton* _DifferentEffect[EFFECT_AMOUNT];
+	bool _differOn;
 
 public:
 	CUIView();

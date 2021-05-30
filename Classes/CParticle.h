@@ -7,6 +7,8 @@
 #define EXPLOSION 3				// 噴射出圓形的煙火
 #define HEARTSHAPE 4			// 噴射出心型的煙火
 #define BUTTERFLYSHAPE	5		// 噴射出蝴蝶外型的煙火
+#define LAMBDA 6				// Draw Lambda Icon
+#define SPLIT 7
 
 #define EMITTER_DEFAULT 99
 #include "cocos2d.h"
@@ -53,11 +55,15 @@ public:
 	void setLifetime(const float lt);
 	void setDirection(const cocos2d::Point& pt) { _Direction = pt; }
 	void setSize(float s) { _fSize = s; _Particle->setScale(_fSize); }
+	void setSpin(float spin);
 
 	void setOpacity(float op);
 
 	//Set texture
 	void setParticleTexture(const std::string& pngName);
+
+	//Calculate
+	float calSpin(float dt);
 };
 
 #endif

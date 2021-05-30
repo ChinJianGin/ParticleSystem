@@ -162,3 +162,27 @@ Point Butterfly::getDir()
 	_Direction.y = cost * (expf(cost) - 2 * cos4t - powf(sin12t, 5));
 	return _Direction;
 }
+
+Lambda::Lambda()
+{
+	_fVelocity = 2.0f;
+	_fLifeTime = 1.5f;
+	_fIntensity = 1;
+	_fOpacity = 255;
+	_fSpin = 0;
+	_fSize = 1;
+	_color = Color3B(128 + rand() % 128, 128 + rand() % 128, 128 + rand() % 128);
+	//_color = Color3B(255, 255, 255);
+	_fElapsedTime = 0;
+	_fGravity = 0;
+	_iType = LAMBDA;
+}
+
+Point Lambda::getDir()
+{
+	float t;
+	t = 2.0f * M_PI * (rand() % 1000) / 1000.0f;	
+	_Direction.x = sinf(t) * (rand() % 50);
+	_Direction.y = cosf(t) * (rand() % 50);
+	return _Direction;
+}

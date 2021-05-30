@@ -52,10 +52,11 @@ bool CParticle::update(float dt)
 			_Particle->setScale(1 + sint * 2);
 			_Particle->setOpacity(_fOpacity * cost);
 			_Particle->setColor(Color3B(INTENSITY((_color.r + sint * 64)*(1 + sint)), 
-				INTENSITY((_color.g - cost * 32)*(1 + sint)), INTENSITY((_color.b - sint * 64)*(1 + sint))));
+			INTENSITY((_color.g - cost * 32)*(1 + sint)), INTENSITY((_color.b - sint * 64)*(1 + sint))));
 			float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
 			_Pos.y += (_Direction.y  * _fVelocity + tt) * dt * PIXEL_PERM;
 			_Particle->setPosition(_Pos);
+			_Particle->setRotation(this->calSpin(dt));
 		}
 		break;
 	case RANDOMS_FALLING:
@@ -81,6 +82,7 @@ bool CParticle::update(float dt)
 			float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
 			_Pos.y += (_Direction.y * _fVelocity + tt)* dt * PIXEL_PERM;
 			_Particle->setPosition(_Pos);
+			_Particle->setRotation(this->calSpin(dt));
 		}
 		break;
 	case FREE_FLY:
@@ -108,6 +110,7 @@ bool CParticle::update(float dt)
 			_Pos.y += (_Direction.y * _fVelocity + tt)* dt * PIXEL_PERM;
 			//_Pos.y += _Direction.y * _fVelocity * dt;
 			_Particle->setPosition(_Pos);
+			_Particle->setRotation(this->calSpin(dt));
 		}
 		break;
 	case EXPLOSION:
@@ -133,6 +136,7 @@ bool CParticle::update(float dt)
 			float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
 			_Pos.y += (_Direction.y * cost * _fVelocity + tt)* dt * PIXEL_PERM;
 			_Particle->setPosition(_Pos);
+			_Particle->setRotation(this->calSpin(dt));
 		}
 		break;
 	case HEARTSHAPE:
@@ -160,6 +164,7 @@ bool CParticle::update(float dt)
 			float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
 			_Pos.y += (_Direction.y * cost * _fVelocity + tt)* dt * PIXEL_PERM;
 			_Particle->setPosition(_Pos);
+			_Particle->setRotation(this->calSpin(dt));
 		}
 		break;
 	case EMITTER_DEFAULT:
@@ -185,9 +190,35 @@ bool CParticle::update(float dt)
 			_Pos.x += _Direction.x * _fVelocity * dt * PIXEL_PERM;
 			float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
 			_Pos.y += (_Direction.y * _fVelocity + tt)* dt * PIXEL_PERM;
-			_Particle->setPosition(_Pos);
+			_Particle->setPosition(_Pos);			
+			_Particle->setRotation(this->calSpin(dt));
 		}
 		break;
+	case LAMBDA:
+		if (!_bVisible && _fElapsedTime >= _fDelayTime) {
+			_fElapsedTime = _fElapsedTime - _fDelayTime; // 重新開始計時
+			_bVisible = true;
+			_Particle->setVisible(_bVisible);
+			_Particle->setColor(_color);
+			_Particle->setPosition(_Pos);
+		}
+		else if (_fElapsedTime > _fLifeTime) {
+			_bVisible = false;
+			_Particle->setVisible(_bVisible);
+			return true; // 分子生命週期已經結束
+		}
+		else {
+			sint = sinf(M_PI_2 * _fElapsedTime / _fLifeTime);
+			cost = cosf(2 * M_PI_2 * _fElapsedTime / _fLifeTime);
+			_Particle->setScale(1.25 + sint * 2.0);
+			_Particle->setOpacity(_fOpacity);
+			_Particle->setColor(Color3B(INTENSITY(_color.r* (1 + sint)), INTENSITY(_color.g* (1 + sint)), INTENSITY(_color.b* (1 + sint))));
+			_Pos.x += _Direction.x * cost * _fVelocity * dt * PIXEL_PERM;
+			float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
+			_Pos.y += (_Direction.y * cost * _fVelocity + tt) * dt * PIXEL_PERM;
+			_Particle->setPosition(_Pos);
+			_Particle->setRotation(this->calSpin(dt));
+		}
 	}
 	// 累加時間
 	_fElapsedTime += dt;
@@ -258,4 +289,16 @@ void CParticle::setOpacity(float op)
 void CParticle::setParticleTexture(const std::string& pngName)
 {
 	_Particle->setSpriteFrame(pngName);
+}
+
+void CParticle::setSpin(float spin)
+{
+	_fSpin = spin;
+}
+
+float CParticle::calSpin(float dt)
+{
+	float degree = _Particle->getRotation();
+	degree += dt * _fSpin;
+	return degree;
 }

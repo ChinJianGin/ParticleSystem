@@ -71,3 +71,13 @@ public:
 private:
 
 };
+
+class Lambda : public CXParticle
+{
+public:
+	Lambda();
+	~Lambda() {}
+	Point getDir() override;
+private:
+
+};
