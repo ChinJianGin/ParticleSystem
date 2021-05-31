@@ -72,11 +72,21 @@ private:
 
 };
 
-class Lambda : public CXParticle
+class Split : public CXParticle
 {
 public:
-	Lambda();
-	~Lambda() {}
+	Split();
+	~Split() {}
+	Point getDir() override;
+private:
+
+};
+
+class Cannabis : public CXParticle
+{
+public:
+	Cannabis();
+	~Cannabis() {}
 	Point getDir() override;
 private:
 

@@ -1,6 +1,6 @@
 #pragma once
 #define TEXTURE_AMOUNT 7
-#define EFFECT_AMOUNT 1
+#define EFFECT_AMOUNT 2
 
 #include "cocos2d.h"
 #include "ui/CocosGUI.h" // For Cocos Studio 控制項元件
