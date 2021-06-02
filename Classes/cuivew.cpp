@@ -23,6 +23,8 @@ CUIView::CUIView()
     _GreenBMValue = nullptr;
     _BlueBMValue = nullptr;
     _TypeBMValue = nullptr;
+    _WindBMValue = nullptr;
+    _WindVelBMValue = nullptr;
     _EmitterSprite = nullptr;
     _emitterSwitchBtn = nullptr;
     _bEmitterOn = false;
@@ -49,6 +51,7 @@ void CUIView::setModel(CParticleSystem& model)
     _ParticleControl->_fElpasedTime = 0;
     _ParticleControl->setType(STAY_FOR_TWOSECONDS); // 分子運動的型態，預設為 0
     _ParticleControl->_windDir = Point(0, 0); // 本範例沒有實作此項功能
+    _ParticleControl->_fWindVel = 0.0f;
 }
 
 void CUIView::setProperty(std::string uicsbname, cocos2d::Size vsize, cocos2d::Scene& stage)
@@ -149,6 +152,18 @@ void CUIView::init()
     TypeSlider->setMaxPercent(100); 	// 將 0 到 100 對應到 0 到 360 之間
     _TypeBMValue = dynamic_cast<cocos2d::ui::TextBMFont*>(_uiRoot->getChildByName("TypeBMFont"));
 
+    // Slider of Wind
+    auto* WindSlider = dynamic_cast<cocos2d::ui::Slider*>(_uiRoot->getChildByName("Slider_Wind"));
+    WindSlider->addEventListener(CC_CALLBACK_2(CUIView::WindEvent, this));
+    WindSlider->setMaxPercent(100); 	// 將 0 到 100 對應到 0 到 360 之間
+    _WindBMValue = dynamic_cast<cocos2d::ui::TextBMFont*>(_uiRoot->getChildByName("WindBMFont"));
+
+    // Slider of Wind Velocity
+    auto* WindVelSlider = dynamic_cast<cocos2d::ui::Slider*>(_uiRoot->getChildByName("Slider_Wind_Velocity"));
+    WindVelSlider->addEventListener(CC_CALLBACK_2(CUIView::WindVelEvent, this));
+    WindVelSlider->setMaxPercent(100); 	// 將 0 到 100 對應到 0 到 360 之間
+    _WindVelBMValue = dynamic_cast<cocos2d::ui::TextBMFont*>(_uiRoot->getChildByName("WindVelocityBMFont"));
+
     //Texture Flare
     emiterpos = dynamic_cast<Sprite*>(_uiRoot->getChildByName("flare"));
     loc = emiterpos->getPosition();
@@ -232,18 +247,19 @@ void CUIView::onTouchBegan(const cocos2d::Point& tPoint)
     for(int i = 0; i < TEXTURE_AMOUNT && !texturBtn; i++)
         texturBtn = _TexturSwitchBtn[i]->touchesBegan(tPoint);
     // 沒有顯示 Emitter，而且沒有按在 Emitter 切換按鈕上，才讓 touch 可以點選顯示分子
-    if (!_emitterSwitchBtn->touchesBegan(tPoint) && !_bEmitterOn && !_DifferentEffect[0]->touchesBegan(tPoint) && !texturBtn) _ParticleControl->onTouchesBegan(tPoint);
+    if (!_emitterSwitchBtn->touchesBegan(tPoint) && !_bEmitterOn && !_DifferentEffect[0]->touchesBegan(tPoint) /*&& _differOn*/ && !texturBtn) _ParticleControl->onTouchesBegan(tPoint);
     for (int i = 0; i < EFFECT_AMOUNT && !_differOn; i++)
     {
         _differOn = _DifferentEffect[i]->touchesBegan(tPoint);
         if (_differOn) j = i + 6;
+        if (_differOn && !_bEmitterOn)
+        {
+            _ParticleControl->setType(j);
+            _ParticleControl->onTouchesBegan(tPoint);
+        }
     }
        
-    if (_differOn && !_bEmitterOn)
-    {
-        _ParticleControl->setType(j);
-        _ParticleControl->onTouchesBegan(tPoint);
-    }
+    
 }
 
 void CUIView::onTouchMoved(const cocos2d::Point& tPoint)
@@ -445,3 +461,26 @@ void CUIView::TypeEvent(cocos2d::Ref* sender, cocos2d::ui::Slider::EventType typ
     }
 }
 
+void CUIView::WindEvent(cocos2d::Ref* sender, cocos2d::ui::Slider::EventType type)
+{
+    if (type == Slider::EventType::ON_PERCENTAGE_CHANGED)
+    {
+        const Slider* slider = dynamic_cast<Slider*>(sender);
+        float percent = slider->getPercent();
+        float iPI = percent / 50; // 0 到 2 之間
+        _WindBMValue->setString(StringUtils::format("%1.1f", iPI));
+        _ParticleControl->setWind(iPI);
+    }
+}
+
+void CUIView::WindVelEvent(cocos2d::Ref* sender, cocos2d::ui::Slider::EventType type)
+{
+    if (type == Slider::EventType::ON_PERCENTAGE_CHANGED)
+    {
+        const Slider* slider = dynamic_cast<Slider*>(sender);
+        float percent = slider->getPercent();
+        float iWindVel = percent / 10; // 0 到 20 之間
+        _WindVelBMValue->setString(StringUtils::format("%1.1f", iWindVel));
+        _ParticleControl->setWindVel(iWindVel);
+    }
+}

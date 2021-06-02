@@ -23,14 +23,17 @@ private:
 	cocos2d::Point  _OldPos;		// 分子前一個位置
 	cocos2d::Point  _Pos;			// 分子目前的位置
 	cocos2d::Point  _Direction;	// 分子目前的運動方向，單位向量
+	cocos2d::Point  _WindDir;		//分子被風吹的方向
+	
 
 	float _fVelocity;	// 分子的速度
 	float _fLifeTime;	// 生命週期
-	float _fIntensity;// 分子能量的最大值，通常用於改變分子的顏色
+	float _fIntensity;	// 分子能量的最大值，通常用於改變分子的顏色
 	float _fOpacity;	// 目前分子的透明度
 	float _fSpin;		// 分子的旋轉量
 	float _fSize;		// 分子的大小
 	float _fGravity;	// 分子接收到的重力大小
+	float  _WindVel;    // 風的大小
 	cocos2d::Color3B _color;	// 分子的顏色
 	// 時間
 	float _fElapsedTime; // 分子從顯示到目前為止的時間
@@ -59,11 +62,18 @@ public:
 
 	void setOpacity(float op);
 
+	void setWind(cocos2d::Point& wind);
+
+	void setWindVel(float vel);
+
 	//Set texture
 	void setParticleTexture(const std::string& pngName);
 
 	//Calculate
 	float calSpin(float dt);
+
+	float WindXCal(float dt);
+	float WindYCal(float dt);
 };
 
 #endif

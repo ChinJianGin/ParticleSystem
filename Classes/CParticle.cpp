@@ -52,11 +52,21 @@ bool CParticle::update(float dt)
 			_Particle->setScale(1 + sint * 2);
 			_Particle->setOpacity(_fOpacity * cost);
 			_Particle->setColor(Color3B(INTENSITY((_color.r + sint * 64)*(1 + sint)), 
-			INTENSITY((_color.g - cost * 32)*(1 + sint)), INTENSITY((_color.b - sint * 64)*(1 + sint))));
-			float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
-			_Pos.y += (_Direction.y  * _fVelocity + tt) * dt * PIXEL_PERM;
-			_Particle->setPosition(_Pos);
-			_Particle->setRotation(this->calSpin(dt));
+			INTENSITY((_color.g - cost * 32)*(1 + sint)), INTENSITY((_color.b - sint * 64)*(1 + sint))));			
+			if (_WindDir != Point(0, 0))
+			{
+				float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
+				_Pos.x += ((_Direction.x * _fVelocity) + (this->WindXCal(dt)/* * _WindVel*/)) * dt * PIXEL_PERM;				
+				_Pos.y += ((_Direction.y * _fVelocity + tt) + (this->WindYCal(dt))) * dt * PIXEL_PERM;
+				log("%1.2f", _Pos.y);
+				_Particle->setPosition(_Pos);
+			}
+			else {
+				float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
+				_Pos.y += (_Direction.y * _fVelocity + tt) * dt * PIXEL_PERM;
+				_Particle->setPosition(_Pos);
+			}
+			_Particle->setRotation(this->calSpin(dt)); 
 		}
 		break;
 	case RANDOMS_FALLING:
@@ -78,10 +88,21 @@ bool CParticle::update(float dt)
 			_Particle->setScale(1 + sint * 1.25f);
 			_Particle->setOpacity(_fOpacity * cost);
 			_Particle->setColor(_color);
-			_Pos.x += _Direction.x * _fVelocity * dt * PIXEL_PERM;
-			float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
-			_Pos.y += (_Direction.y * _fVelocity + tt)* dt * PIXEL_PERM;
-			_Particle->setPosition(_Pos);
+			if (_WindDir != Point(0, 0))
+			{
+				float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
+				_Pos.x += ((_Direction.x * _fVelocity) + (this->WindXCal(dt) * _WindVel)) * dt * PIXEL_PERM;
+				_Pos.y += ((_Direction.y * _fVelocity + tt) + (this->WindYCal(dt))) * dt * PIXEL_PERM;
+				//log("%1.2f", (this->WindYCal(dt) * _WindDir.y));
+				_Particle->setPosition(_Pos);
+			}
+			else
+			{
+				_Pos.x += _Direction.x * _fVelocity * dt * PIXEL_PERM;
+				float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
+				_Pos.y += (_Direction.y * _fVelocity + tt) * dt * PIXEL_PERM;
+				_Particle->setPosition(_Pos);
+			}			
 			_Particle->setRotation(this->calSpin(dt));
 		}
 		break;
@@ -105,11 +126,22 @@ bool CParticle::update(float dt)
 			_Particle->setScale(1 + sint * 2);
 			_Particle->setOpacity(_fOpacity * cost);
 			_Particle->setColor(_color);
-			_Pos.x += _Direction.x * _fVelocity * dt * PIXEL_PERM;
-			float tt = GRAVITY_Y(_fElapsedTime, dt,_fGravity);
-			_Pos.y += (_Direction.y * _fVelocity + tt)* dt * PIXEL_PERM;
-			//_Pos.y += _Direction.y * _fVelocity * dt;
-			_Particle->setPosition(_Pos);
+			if (_WindDir != Point(0, 0))
+			{
+				float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
+				_Pos.x += ((_Direction.x * _fVelocity) + (this->WindXCal(dt) * _WindVel)) * dt * PIXEL_PERM;
+				_Pos.y += ((_Direction.y * _fVelocity + tt) + (this->WindYCal(dt) + tt)) * dt * PIXEL_PERM;
+				//log("%1.2f", (this->WindYCal(dt) * _WindDir.y));
+				_Particle->setPosition(_Pos);
+			}
+			else
+			{
+				_Pos.x += _Direction.x * _fVelocity * dt * PIXEL_PERM;
+				float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
+				_Pos.y += (_Direction.y * _fVelocity + tt) * dt * PIXEL_PERM;
+				//_Pos.y += _Direction.y * _fVelocity * dt;
+				_Particle->setPosition(_Pos);
+			}			
 			_Particle->setRotation(this->calSpin(dt));
 		}
 		break;
@@ -132,10 +164,21 @@ bool CParticle::update(float dt)
 			_Particle->setScale(1.25 + sint*2.0);
 			_Particle->setOpacity(_fOpacity * cost);
 			_Particle->setColor(Color3B(INTENSITY(_color.r*(1 + sint)), INTENSITY(_color.g*(1 + sint)), INTENSITY(_color.b*(1 + sint))));
-			_Pos.x += _Direction.x * cost * _fVelocity * dt * PIXEL_PERM;
-			float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
-			_Pos.y += (_Direction.y * cost * _fVelocity + tt)* dt * PIXEL_PERM;
-			_Particle->setPosition(_Pos);
+			if (_WindDir != Point(0, 0))
+			{
+				float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
+				_Pos.x += ((_Direction.x * _fVelocity) + (this->WindXCal(dt) * _WindVel)) * dt * PIXEL_PERM;
+				_Pos.y += ((_Direction.y * _fVelocity + tt) + (this->WindYCal(dt) + tt)) * dt * PIXEL_PERM;
+				//log("%1.2f", (this->WindYCal(dt) * _WindDir.y));
+				_Particle->setPosition(_Pos);
+			}
+			else
+			{
+				_Pos.x += _Direction.x * cost * _fVelocity * dt * PIXEL_PERM;
+				float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
+				_Pos.y += (_Direction.y * cost * _fVelocity + tt) * dt * PIXEL_PERM;
+				_Particle->setPosition(_Pos);
+			}			
 			_Particle->setRotation(this->calSpin(dt));
 		}
 		break;
@@ -160,10 +203,21 @@ bool CParticle::update(float dt)
 			_Particle->setScale(1.25 + (1 - cost)*2.0);
 			_Particle->setOpacity(_fOpacity * cost);
 			_Particle->setColor(_color);
-			_Pos.x += _Direction.x * cost * _fVelocity * dt * PIXEL_PERM;
-			float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
-			_Pos.y += (_Direction.y * cost * _fVelocity + tt)* dt * PIXEL_PERM;
-			_Particle->setPosition(_Pos);
+			if (_WindDir != Point(0, 0))
+			{
+				float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
+				_Pos.x += ((_Direction.x * _fVelocity) + (this->WindXCal(dt) * _WindVel)) * dt * PIXEL_PERM;
+				_Pos.y += ((_Direction.y * _fVelocity + tt) + (this->WindYCal(dt) + tt)) * dt * PIXEL_PERM;
+				//log("%1.2f", (this->WindYCal(dt) * _WindDir.y));
+				_Particle->setPosition(_Pos);
+			}
+			else
+			{
+				_Pos.x += _Direction.x * cost * _fVelocity * dt * PIXEL_PERM;
+				float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
+				_Pos.y += (_Direction.y * cost * _fVelocity + tt) * dt * PIXEL_PERM;
+				_Particle->setPosition(_Pos);
+			}			
 			_Particle->setRotation(this->calSpin(dt));
 		}
 		break;
@@ -187,10 +241,21 @@ bool CParticle::update(float dt)
 			_Particle->setOpacity(_fOpacity * cost);
 			_Particle->setColor(Color3B(INTENSITY(_color.r*(1 + sint)), INTENSITY(_color.g*(1 + sint)), INTENSITY(_color.b*(1 + sint))));
 //			_Particle->setColor(_color);
-			_Pos.x += _Direction.x * _fVelocity * dt * PIXEL_PERM;
-			float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
-			_Pos.y += (_Direction.y * _fVelocity + tt)* dt * PIXEL_PERM;
-			_Particle->setPosition(_Pos);			
+			if (_WindDir != Point(0, 0))
+			{
+				float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
+				_Pos.x += ((_Direction.x * _fVelocity) + (this->WindXCal(dt))) * dt * PIXEL_PERM;
+				_Pos.y += ((_Direction.y * _fVelocity + tt) + (this->WindYCal(dt) + tt)) * dt * PIXEL_PERM;
+				//log("%1.2f", _Pos.x);
+				_Particle->setPosition(_Pos);
+			}
+			else
+			{
+				_Pos.x += _Direction.x * _fVelocity * dt * PIXEL_PERM;
+				float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
+				_Pos.y += (_Direction.y * _fVelocity + tt) * dt * PIXEL_PERM;
+				_Particle->setPosition(_Pos);
+			}			
 			_Particle->setRotation(this->calSpin(dt));
 		}
 		break;
@@ -216,7 +281,7 @@ bool CParticle::update(float dt)
 			_Pos.x += _Direction.x * cost * _fVelocity * dt * PIXEL_PERM;
 			float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
 			_Pos.y += (_Direction.y * cost * _fVelocity + tt) * dt * PIXEL_PERM;
-			_Particle->setPosition(_Pos);
+			_Particle->setPosition(_Pos);				
 			_Particle->setRotation(this->calSpin(dt));
 		}
 		break;
@@ -239,10 +304,21 @@ bool CParticle::update(float dt)
 			_Particle->setScale(1.25 + sint * 2.0);
 			_Particle->setOpacity(_fOpacity);
 			_Particle->setColor(Color3B(INTENSITY(_color.r * (1 + sint)), INTENSITY(_color.g * (1 + sint)), INTENSITY(_color.b * (1 + sint))));
-			_Pos.x += _Direction.x * cost * _fVelocity * dt * PIXEL_PERM;
-			float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
-			_Pos.y += (_Direction.y * cost * _fVelocity + tt) * dt * PIXEL_PERM;
-			_Particle->setPosition(_Pos);
+			if (_WindDir != Point(0, 0))
+			{
+				float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
+				_Pos.x += ((_Direction.x * _fVelocity) + (this->WindXCal(dt) * _WindVel)) * dt * PIXEL_PERM;
+				_Pos.y += ((_Direction.y * _fVelocity + tt) + (this->WindYCal(dt) + tt)) * dt * PIXEL_PERM;
+				//log("%1.2f", (this->WindYCal(dt) * _WindDir.y));
+				_Particle->setPosition(_Pos);
+			}
+			else
+			{
+				_Pos.x += _Direction.x * cost * _fVelocity * dt * PIXEL_PERM;
+				float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
+				_Pos.y += (_Direction.y * cost * _fVelocity + tt) * dt * PIXEL_PERM;
+				_Particle->setPosition(_Pos);
+			}			
 			_Particle->setRotation(this->calSpin(dt));
 		}
 		break;
@@ -328,4 +404,32 @@ float CParticle::calSpin(float dt)
 	float degree = _Particle->getRotation();
 	degree += dt * _fSpin;
 	return degree;
+}
+
+void CParticle::setWind(cocos2d::Point& wind)
+{
+	_WindDir = wind;
+}
+
+void CParticle::setWindVel(float vel)
+{
+	_WindVel = vel;
+}
+
+float CParticle::WindXCal(float dt)
+{
+	float windxVel = 0;
+	if (_WindDir.x < 0)
+		windxVel = ((-_WindVel) * _fElapsedTime) + ((0.5f * dt) * (_WindVel + ((_WindDir.x * _WindVel) * dt)));
+	else if (_WindDir.x > 0)
+		windxVel = (_WindVel * _fElapsedTime) + ((0.5f * dt) * (_WindVel + ((_WindDir.x * _WindVel) * dt)));
+	log("%1.2f", windxVel);
+	return	windxVel;
+}
+
+float CParticle::WindYCal(float dt)
+{
+	float windyVel = 0;
+	windyVel = (_fGravity + (_WindVel * _WindDir.y)) * (_fElapsedTime + (0.5 * (dt)));
+	return	windyVel;
 }

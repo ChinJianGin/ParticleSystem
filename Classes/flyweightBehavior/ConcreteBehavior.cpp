@@ -4,6 +4,7 @@ Stay_For_Two_Seconds::Stay_For_Two_Seconds()
 {
 	_fVelocity = 0.25f;
 	_fLifeTime = 2.5f;
+	_Direction = Point(0, 0);
 	_fIntensity = 1;
 	_fOpacity = 255;
 	_fSize = 1;
@@ -15,10 +16,10 @@ Stay_For_Two_Seconds::Stay_For_Two_Seconds()
 
 Point Stay_For_Two_Seconds::getDir()
 {
-	float t;
+	/*float t;
 	t = 2.0f * M_PI * (rand() % 1000) / 1000.0f;
 	_Direction.x = cosf(t);
-	_Direction.y = sinf(t);
+	_Direction.y = sinf(t);*/
 	return _Direction;
 }
 

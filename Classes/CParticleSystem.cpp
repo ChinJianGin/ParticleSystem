@@ -9,6 +9,7 @@ CParticleSystem::CParticleSystem()
 	_fGravity = 0;
 	_bEmitterOn = false;
 	_pngName = nullptr;
+	_windDir = Point(0,0);
 }
 
 void CParticleSystem::setEmitter(bool bEm)
@@ -71,6 +72,8 @@ void CParticleSystem::update(float dt)
 					get->setParticleTexture(_pngName);
 					get->setSpin(_fSpin);
 					get->setSize(0.125f);
+					get->setWind(_windDir);
+					get->setWindVel(_fWindVel);
 					// 根據 _fSpread 與 _vDir 產生方向
 					float t = (rand() % 1001) / 1000.0f; // 產生介於 0 到 1 間的數
 					t = _fSpread - t * _fSpread * 2; //  產生的角度，轉成弧度
@@ -149,6 +152,8 @@ void CParticleSystem::onTouchesBegan(const cocos2d::Point &touchPoint)
 			get->setLifetime(_fLifeTime);
 			get->setParticleTexture(_pngName);
 			get->setSpin(_fSpin);
+			get->setWind(_windDir);
+			get->setWindVel(_fWindVel);
 			_FreeList.pop_front();
 			_InUsedList.push_front(get);
 			_iFree--; _iInUsed++;
@@ -166,6 +171,8 @@ void CParticleSystem::onTouchesBegan(const cocos2d::Point &touchPoint)
 			get->setLifetime(_fLifeTime);
 			get->setParticleTexture(_pngName);
 			get->setSpin(_fSpin);
+			get->setWind(_windDir);
+			get->setWindVel(_fWindVel);
 			_FreeList.pop_front();
 			_InUsedList.push_front(get);
 			_iFree--; _iInUsed++;
@@ -184,6 +191,8 @@ void CParticleSystem::onTouchesBegan(const cocos2d::Point &touchPoint)
 			get->setLifetime(_fLifeTime);
 			get->setParticleTexture(_pngName);
 			get->setSpin(_fSpin);
+			get->setWind(_windDir);
+			get->setWindVel(_fWindVel);
 			_FreeList.pop_front();
 			_InUsedList.push_front(get);
 			_iFree--; _iInUsed++;
@@ -203,6 +212,8 @@ void CParticleSystem::onTouchesBegan(const cocos2d::Point &touchPoint)
 				get->setLifetime(_fLifeTime);
 				get->setParticleTexture(_pngName);
 				get->setSpin(_fSpin);
+				get->setWind(_windDir);
+				get->setWindVel(_fWindVel);
 				_FreeList.pop_front();
 				_InUsedList.push_front(get);
 				_iFree--; _iInUsed++;
@@ -223,6 +234,8 @@ void CParticleSystem::onTouchesBegan(const cocos2d::Point &touchPoint)
 				get->setLifetime(_fLifeTime);
 				get->setParticleTexture(_pngName);
 				get->setSpin(_fSpin);
+				get->setWind(_windDir);
+				get->setWindVel(_fWindVel);
 				_FreeList.pop_front();
 				_InUsedList.push_front(get);
 				_iFree--; _iInUsed++;
@@ -243,6 +256,8 @@ void CParticleSystem::onTouchesBegan(const cocos2d::Point &touchPoint)
 				get->setLifetime(_fLifeTime);
 				get->setParticleTexture(_pngName);
 				get->setSpin(_fSpin);
+				get->setWind(_windDir);
+				get->setWindVel(_fWindVel);
 				_FreeList.pop_front();
 				_InUsedList.push_front(get);
 				_iFree--; _iInUsed++;
@@ -282,6 +297,8 @@ void CParticleSystem::onTouchesBegan(const cocos2d::Point &touchPoint)
 				get->setLifetime(_fLifeTime);
 				get->setParticleTexture(_pngName);
 				get->setSpin(_fSpin);
+				get->setWind(_windDir);
+				get->setWindVel(_fWindVel);
 				_FreeList.pop_front();
 				_InUsedList.push_front(get);
 				_iFree--; _iInUsed++;
@@ -310,6 +327,8 @@ void CParticleSystem::onTouchesMoved(const cocos2d::Point &touchPoint)
 			get->setLifetime(_fLifeTime);
 			get->setParticleTexture(_pngName);
 			get->setSpin(_fSpin);
+			get->setWind(_windDir);
+			get->setWindVel(_fWindVel);
 			_FreeList.pop_front();
 			_InUsedList.push_front(get);
 			_iFree--; _iInUsed++;
@@ -327,6 +346,8 @@ void CParticleSystem::onTouchesMoved(const cocos2d::Point &touchPoint)
 			get->setLifetime(_fLifeTime);
 			get->setParticleTexture(_pngName);
 			get->setSpin(_fSpin);
+			get->setWind(_windDir);
+			get->setWindVel(_fWindVel);
 			_FreeList.pop_front();
 			_InUsedList.push_front(get);
 			_iFree--; _iInUsed++;
@@ -345,11 +366,40 @@ void CParticleSystem::onTouchesMoved(const cocos2d::Point &touchPoint)
 			get->setLifetime(_fLifeTime);
 			get->setParticleTexture(_pngName);
 			get->setSpin(_fSpin);
+			get->setWind(_windDir);
+			get->setWindVel(_fWindVel);
 			_FreeList.pop_front();
 			_InUsedList.push_front(get);
 			_iFree--; _iInUsed++;
 		}
 		else return;// 沒有分子, 所以就不提供
 		break;
+	}
+}
+
+void CParticleSystem::setWind(float wind)
+{
+	float t;
+	t = wind * M_PI;
+	_windDir.x = cosf(t);
+	_windDir.y = sinf(t);		
+	list <CParticle*>::iterator it;
+	if (_iInUsed != 0) { // 有分子需要更新時
+		for (it = _InUsedList.begin(); it != _InUsedList.end(); it++) {
+			(*it)->setWind(_windDir);
+		}
+	}
+	//log("x = %1.4f", _windDir.x);
+	//log("y = %1.1f", _windDir.y);
+}
+
+void CParticleSystem::setWindVel(float vel)
+{
+	_fWindVel = vel;
+	list <CParticle*>::iterator it;
+	if (_iInUsed != 0) { // 有分子需要更新時
+		for (it = _InUsedList.begin(); it != _InUsedList.end(); it++) {
+			(*it)->setWindVel(_fWindVel);
+		}
 	}
 }
