@@ -28,6 +28,7 @@ void CParticleSystem::init(cocos2d::Scene &stage)
 	_BehaviorManager->getParticleBehavior(5, *(new Butterfly));
 	_BehaviorManager->getParticleBehavior(6, *(new Split));
 	_BehaviorManager->getParticleBehavior(7, *(new Cannabis));
+	_BehaviorManager->getParticleBehavior(8, *(new Rain));
 	_BehaviorManager->getParticleBehavior(99, *(new Emitter_Default));
 	_iFree = NUMBER_PARTICLES;
 	_VisibleSize = Director::getInstance()->getVisibleSize();
@@ -295,6 +296,28 @@ void CParticleSystem::onTouchesBegan(const cocos2d::Point &touchPoint)
 				get->setColor(Color3B(_fRed, _fGreen, _fBlue));
 				get->setOpacity(_fOpacity);
 				get->setLifetime(_fLifeTime);
+				get->setParticleTexture(_pngName);
+				get->setSpin(_fSpin);
+				get->setWind(_windDir);
+				get->setWindVel(_fWindVel);
+				_FreeList.pop_front();
+				_InUsedList.push_front(get);
+				_iFree--; _iInUsed++;
+			}
+
+		}
+		else return;// 沒有分子, 所以就不提供
+		break;
+	case RAIN:
+		if (_iFree > 100) {
+			for (int i = 0; i < 100; i++) {
+				get = _FreeList.front();
+				get->setBehavior(*(_BehaviorManager->getParticleBehavior(RAIN)));
+				get->setPosition(Vec2(_VisibleSize.width / 2 + _origin.x + ((rand() % 1600) - 900), _VisibleSize.height + 720 + ((rand() % 720) - 720)));
+				get->setGravity(_fGravity);
+				get->setColor(Color3B(_fRed, _fGreen, _fBlue));
+				get->setOpacity(_fOpacity);
+				//get->setLifetime(_fLifeTime);
 				get->setParticleTexture(_pngName);
 				get->setSpin(_fSpin);
 				get->setWind(_windDir);

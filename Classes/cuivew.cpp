@@ -235,6 +235,14 @@ void CUIView::init()
     _DifferentEffect[1] = CSwitchButton::create();
     _DifferentEffect[1]->setButtonInfo("emitteroff.png", "emitteroff.png", "emitteron.png", loc);
     _stage->addChild(_DifferentEffect[1], 2);
+
+    //Effect Rain
+    emiterpos = dynamic_cast<Sprite*>(_uiRoot->getChildByName("rainbtn"));
+    loc = emiterpos->getPosition();
+    emiterpos->setVisible(false);
+    _DifferentEffect[2] = CSwitchButton::create();
+    _DifferentEffect[2]->setButtonInfo("emitteroff.png", "emitteroff.png", "emitteron.png", loc);
+    _stage->addChild(_DifferentEffect[2], 2);
 }
 
 

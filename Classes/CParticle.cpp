@@ -322,6 +322,43 @@ bool CParticle::update(float dt)
 			_Particle->setRotation(this->calSpin(dt));
 		}
 		break;
+	case RAIN:
+		if (!_bVisible && _fElapsedTime >= _fDelayTime) {
+			_fElapsedTime = _fElapsedTime - _fDelayTime; // 重新開始計時
+			_bVisible = true;
+			_Particle->setVisible(_bVisible);
+			_Particle->setColor(_color);
+			_Particle->setPosition(_Pos);
+		}
+		else if (_fElapsedTime > _fLifeTime) {
+			_bVisible = false;
+			_Particle->setVisible(_bVisible);
+			return true; // 分子生命週期已經結束
+		}
+		else {
+			sint = sinf(M_PI * _fElapsedTime / _fLifeTime);
+			cost = cosf(M_PI_2 * _fElapsedTime / _fLifeTime);
+			_Particle->setScale(1 + sint * (rand() % 2));
+			_Particle->setOpacity(_fOpacity * cost);
+			_Particle->setColor(_color);
+			if (_WindDir != Point(0, 0))
+			{
+				float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
+				_Pos.x += ((_Direction.x * _fVelocity) + (this->WindXCal(dt) * _WindVel)) * dt * PIXEL_PERM;
+				_Pos.y += ((_Direction.y * _fVelocity + tt) + (this->WindYCal(dt))) * dt * PIXEL_PERM;
+				//log("%1.2f", (this->WindYCal(dt) * _WindDir.y));
+				_Particle->setPosition(_Pos);
+			}
+			else
+			{
+				_Pos.x += _Direction.x * _fVelocity * dt * PIXEL_PERM;
+				float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
+				_Pos.y += (_Direction.y * _fVelocity + tt) * dt * PIXEL_PERM;
+				_Particle->setPosition(_Pos);
+			}
+			_Particle->setRotation(this->calSpin(dt));
+		}
+		break;
 	}
 	// 累加時間
 	_fElapsedTime += dt;

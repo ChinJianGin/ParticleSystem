@@ -91,3 +91,13 @@ public:
 private:
 
 };
+
+class Rain : public CXParticle
+{
+public:
+	Rain();
+	~Rain() {}
+	Point getDir() override;
+private:
+
+};
