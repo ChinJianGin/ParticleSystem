@@ -28,7 +28,8 @@ void CParticleSystem::init(cocos2d::Scene &stage)
 	_BehaviorManager->getParticleBehavior(5, *(new Butterfly));
 	_BehaviorManager->getParticleBehavior(6, *(new Split));
 	_BehaviorManager->getParticleBehavior(7, *(new Cannabis));
-	_BehaviorManager->getParticleBehavior(8, *(new Rain));
+	_BehaviorManager->getParticleBehavior(8, *(new Test_One));
+	_BehaviorManager->getParticleBehavior(9, *(new Rain));	
 	_BehaviorManager->getParticleBehavior(99, *(new Emitter_Default));
 	_iFree = NUMBER_PARTICLES;
 	_VisibleSize = Director::getInstance()->getVisibleSize();
@@ -54,52 +55,93 @@ void CParticleSystem::update(float dt)
 {
 	CParticle *get;
 	list <CParticle *>::iterator it;	
-	if (_bEmitterOn) { // 根據 Emitter 設定的相關參數，產生相對應的分子
-		// 先計算在累加
+	if (_bEmitterOn) { // 根據 Emitter 設定的相關參數，產生相對應的分子		
 		int n = (int)(_fElpasedTime * _iNumParticles); // 到目前為止應該產生的分子個數
-		if (n > _iGenParticles) {  // 產生的分子個數不足，產生到 n 個分子
-			for (int i = 0; i < n - _iGenParticles; i++) {
-				// 根據 Emitter 的相關參數，設定所產生分子的參數
-				if (_iFree != 0) {
-					get = _FreeList.front();
-					get->setBehavior(*(_BehaviorManager->getParticleBehavior(EMITTER_DEFAULT)));
-					get->setVelocity(_fVelocity);
-					get->setLifetime(_fLifeTime);
-					get->setGravity(_fGravity);
-					get->setPosition(_emitterPt);
-					get->setColor(Color3B(_fRed, _fGreen, _fBlue));
-					get->setOpacity(_fOpacity);
-					get->setLifetime(_fLifeTime);
-					get->setParticleTexture(_pngName);
-					get->setSpin(_fSpin);
-					get->setSize(0.125f);
-					get->setWind(_windDir);
-					get->setWindVel(_fWindVel);
-					// 根據 _fSpread 與 _vDir 產生方向
-					float t = (rand() % 1001) / 1000.0f; // 產生介於 0 到 1 間的數
-					t = _fSpread - t * _fSpread * 2; //  產生的角度，轉成弧度
-					t = ( _fDir + t )* M_PI / 180.0f;
-					Vec2 vdir(cosf(t), sinf(t));
-					get->setDirection(vdir);
-					_FreeList.pop_front();
-					_InUsedList.push_front(get);
-					_iFree--; _iInUsed++;
+		switch (_iType)
+		{
+		case STAY_FOR_TWOSECONDS:
+			if (n > _iGenParticles) {  // 產生的分子個數不足，產生到 n 個分子
+				for (int i = 0; i < n - _iGenParticles; i++) {
+					// 根據 Emitter 的相關參數，設定所產生分子的參數
+					if (_iFree != 0) {
+						get = _FreeList.front();
+						get->setBehavior(*(_BehaviorManager->getParticleBehavior(EMITTER_DEFAULT)));
+						get->setVelocity(_fVelocity);
+						get->setLifetime(_fLifeTime);
+						get->setGravity(_fGravity);
+						get->setPosition(_emitterPt);
+						get->setColor(Color3B(_fRed, _fGreen, _fBlue));
+						get->setOpacity(_fOpacity);
+						get->setParticleTexture(_pngName);
+						get->setSpin(_fSpin);
+						get->setSize(0.125f);
+						get->setWind(_windDir);
+						get->setWindVel(_fWindVel);
+						// 根據 _fSpread 與 _vDir 產生方向
+						float t = (rand() % 1001) / 1000.0f; // 產生介於 0 到 1 間的數
+						t = _fSpread - t * _fSpread * 2; //  產生的角度，轉成弧度
+						t = (_fDir + t) * M_PI / 180.0f;
+						Vec2 vdir(cosf(t), sinf(t));
+						get->setDirection(vdir);
+						_FreeList.pop_front();
+						_InUsedList.push_front(get);
+						_iFree--; _iInUsed++;
+					}
 				}
+				_iGenParticles = n; // 目前已經產生 n 個分子
+
 			}
-			_iGenParticles = n; // 目前已經產生 n 個分子
-			
+			if (_fElpasedTime >= 1.0f) {
+				_fElpasedTime -= 1.0f;
+				if (_iGenParticles >= _iNumParticles) _iGenParticles -= _iNumParticles;
+				else _iGenParticles = 0;
+			}
+			break;
+		case RANDOMS_FALLING:
+			if (n > _iGenParticles) {  // 產生的分子個數不足，產生到 n 個分子
+				for (int i = 0; i < n - _iGenParticles; i++) {
+					// 根據 Emitter 的相關參數，設定所產生分子的參數
+					if (_iFree != 0) {
+						get = _FreeList.front();
+						get->setBehavior(*(_BehaviorManager->getParticleBehavior(RAIN)));
+						get->setVelocity(_fVelocity);
+						get->setGravity(_fGravity);
+						get->setPosition(Vec2(_VisibleSize.width / 2 + _origin.x + ((rand() % 1600) - 900), _VisibleSize.height ));
+						get->setColor(Color3B(_fRed, _fGreen, _fBlue));
+						get->setOpacity(_fOpacity);
+						get->setParticleTexture(_pngName);
+						get->setSpin(_fSpin);
+						get->setWind(_windDir);
+						get->setWindVel(_fWindVel);
+						// 根據 _fSpread 與 _vDir 產生方向
+						float t = (rand() % 1001) / 1000.0f; // 產生介於 0 到 1 間的數
+						t = _fSpread - t * _fSpread * 2; //  產生的角度，轉成弧度
+						t = (_fDir * 2 + t) * M_PI_2 / 180.0f;
+						Vec2 vdir(cosf(t), (-sinf(t)));
+						get->setDirection(vdir);
+						_FreeList.pop_front();
+						_InUsedList.push_front(get);
+						_iFree--; _iInUsed++;
+					}
+				}
+				_iGenParticles = n; // 目前已經產生 n 個分子
+
+			}
+			if (_fElpasedTime >= 1.0f) {
+				_fElpasedTime -= 1.0f;
+				if (_iGenParticles >= _iNumParticles) _iGenParticles -= _iNumParticles;
+				else _iGenParticles = 0;
+			}
+
+			break;
 		}
-		if (_fElpasedTime >= 1.0f) {
-			_fElpasedTime -= 1.0f;
-			if (_iGenParticles >= _iNumParticles) _iGenParticles -= _iNumParticles;
-			else _iGenParticles = 0;
-		}
+		// 先計算在累加
 		_fElpasedTime += dt;
 	}
 
 	if (_iInUsed != 0) { // 有分子需要更新時
 		for (it = _InUsedList.begin(); it != _InUsedList.end(); ) {
-			if ((*it)->update(dt)) { // 分子生命週期已經到達
+			if ((*it)->update(dt) || (*it)->getPosition().x < -10 || (*it)->getPosition().x > 1600) { // 分子生命週期已經到達
 									 // 將目前這一個節點的內容放回 _FreeList
 				_FreeList.push_front((*it));
 				it = _InUsedList.erase(it); // 移除目前這一個, 
@@ -308,16 +350,16 @@ void CParticleSystem::onTouchesBegan(const cocos2d::Point &touchPoint)
 		}
 		else return;// 沒有分子, 所以就不提供
 		break;
-	case RAIN:
-		if (_iFree > 100) {
-			for (int i = 0; i < 100; i++) {
+	case TEST_ONE:
+		if (_iFree > 50) {
+			for (int i = 0; i < 50; i++) {
 				get = _FreeList.front();
-				get->setBehavior(*(_BehaviorManager->getParticleBehavior(RAIN)));
-				get->setPosition(Vec2(_VisibleSize.width / 2 + _origin.x + ((rand() % 1600) - 900), _VisibleSize.height + 720 + ((rand() % 720) - 720)));
+				get->setBehavior(*(_BehaviorManager->getParticleBehavior(TEST_ONE)));
+				get->setPosition(Vec2(_VisibleSize.width / 2 + _origin.x, _VisibleSize.height / 2 + _origin.y));
 				get->setGravity(_fGravity);
 				get->setColor(Color3B(_fRed, _fGreen, _fBlue));
 				get->setOpacity(_fOpacity);
-				//get->setLifetime(_fLifeTime);
+				get->setLifetime(_fLifeTime);
 				get->setParticleTexture(_pngName);
 				get->setSpin(_fSpin);
 				get->setWind(_windDir);

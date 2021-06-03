@@ -217,21 +217,41 @@ Point Cannabis::getDir()
 Rain::Rain()
 {
 	_fVelocity = 5.0f + rand() % 10 / 10.0f;
-	_fLifeTime = 10.0f;
-	//_Direction.x = 0;
+	_fLifeTime = 20.0f;
 	_Direction.y = -1;
 	_fIntensity = 1;
 	_fOpacity = 255;
 	_fSpin = 0;
 	_fSize = 1;
 	_color = Color3B(128 + rand() % 128, 128 + rand() % 128, 128 + rand() % 128);
-	//_color = Color3B(255, 255, 255);
 	_fElapsedTime = 0;
 	_fGravity = 0;
 	_iType = RAIN;
 }
 
 Point Rain::getDir()
+{
+	float t;
+	t = M_PI * (rand() % 1000) / 1000.0f;
+	_Direction.x = cosf(t);
+	return _Direction;
+}
+
+Test_One::Test_One()
+{
+	_fVelocity = 5.0f;
+	_fLifeTime = 2.0f;
+	_fIntensity = 1;
+	_fOpacity = 255;
+	_fSpin = 0;
+	_fSize = 1;
+	_color = Color3B(128 + rand() % 128, 128 + rand() % 128, 128 + rand() % 128);
+	_fElapsedTime = 0;
+	_fGravity = 0;
+	_iType = TEST_ONE;
+}
+
+Point Test_One::getDir()
 {
 	float t;
 	t = M_PI * (rand() % 1000) / 1000.0f;

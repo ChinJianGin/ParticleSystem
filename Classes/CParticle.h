@@ -9,7 +9,9 @@
 #define BUTTERFLYSHAPE	5		// 噴射出蝴蝶外型的煙火
 #define SPLIT 6
 #define CANNABIS 7
-#define RAIN 8
+#define TEST_ONE 8
+#define RAIN 9
+
 
 #define EMITTER_DEFAULT 99
 #include "cocos2d.h"
@@ -75,6 +77,8 @@ public:
 
 	float WindXCal(float dt);
 	float WindYCal(float dt);
+
+	cocos2d::Point& getPosition();
 };
 
 #endif

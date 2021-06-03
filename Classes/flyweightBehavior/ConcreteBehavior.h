@@ -101,3 +101,13 @@ public:
 private:
 
 };
+
+class Test_One : public CXParticle
+{
+public:
+	Test_One();
+	~Test_One() {}
+	Point getDir() override;
+private:
+
+};
