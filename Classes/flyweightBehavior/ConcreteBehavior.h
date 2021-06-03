@@ -111,3 +111,13 @@ public:
 private:
 
 };
+
+class Test_One_Child : public CXParticle
+{
+public:
+	Test_One_Child();
+	~Test_One_Child() {}
+	Point getDir() override;
+private:
+
+};

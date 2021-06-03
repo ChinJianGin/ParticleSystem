@@ -253,8 +253,45 @@ Test_One::Test_One()
 
 Point Test_One::getDir()
 {
+	float t, i, l;
+	t =0.5f *  M_PI * (rand() % 1001) / 1000.0f;
+	i = (rand() % 21) / 10.0f;
+	l = (rand() % 3);
+	if (l != 0)
+	{
+		_Direction.x = i * sinf(t);
+		_Direction.y = cosf(t * i);
+	}
+	else
+	{
+		_Direction.x = sinf(t);
+		_Direction.y = sinf(t) - 0.75;
+	}
+	
+	log("t = %f", i);
+	return _Direction;
+}
+
+Test_One_Child::Test_One_Child()
+{
+	_fVelocity = 5.0f;
+	_fLifeTime = 2.0f;
+	_fIntensity = 1;
+	_fOpacity = 255;
+	_fSpin = 0;
+	_fSize = 1;
+	_color = Color3B(128 + rand() % 128, 128 + rand() % 128, 128 + rand() % 128);
+	_fElapsedTime = 0;
+	_fGravity = 0;
+	_iType = TEST_ONE;
+}
+
+Point Test_One_Child::getDir()
+{
 	float t;
-	t = M_PI * (rand() % 1000) / 1000.0f;
-	_Direction.x = cosf(t);
+	t = M_PI * (1 + ((rand() % 6) * 0.1));
+	log("t = %f", t);
+	_Direction.x =2 + cosf(t);
+	_Direction.y = sinf(t);
 	return _Direction;
 }

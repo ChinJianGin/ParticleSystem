@@ -11,6 +11,7 @@
 #define CANNABIS 7
 #define TEST_ONE 8
 #define RAIN 9
+#define TEST_ONE_CHILD 10
 
 
 #define EMITTER_DEFAULT 99

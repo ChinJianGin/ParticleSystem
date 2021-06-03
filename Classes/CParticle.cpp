@@ -376,7 +376,7 @@ bool CParticle::update(float dt)
 		else {
 			sint = sinf(M_PI * _fElapsedTime / _fLifeTime);
 			cost = cosf(M_PI_2 * _fElapsedTime / _fLifeTime);
-			_Particle->setScale(1 + sint * (rand() % 2));
+			_Particle->setScale(1 + sint * 2.0);
 			_Particle->setOpacity(_fOpacity * cost);
 			_Particle->setColor(_color);
 			if (_WindDir != Point(0, 0))

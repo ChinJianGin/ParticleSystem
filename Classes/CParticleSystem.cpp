@@ -29,7 +29,8 @@ void CParticleSystem::init(cocos2d::Scene &stage)
 	_BehaviorManager->getParticleBehavior(6, *(new Split));
 	_BehaviorManager->getParticleBehavior(7, *(new Cannabis));
 	_BehaviorManager->getParticleBehavior(8, *(new Test_One));
-	_BehaviorManager->getParticleBehavior(9, *(new Rain));	
+	_BehaviorManager->getParticleBehavior(9, *(new Rain));
+	_BehaviorManager->getParticleBehavior(10, *(new Test_One_Child));
 	_BehaviorManager->getParticleBehavior(99, *(new Emitter_Default));
 	_iFree = NUMBER_PARTICLES;
 	_VisibleSize = Director::getInstance()->getVisibleSize();
@@ -351,11 +352,14 @@ void CParticleSystem::onTouchesBegan(const cocos2d::Point &touchPoint)
 		else return;// 沒有分子, 所以就不提供
 		break;
 	case TEST_ONE:
-		if (_iFree > 50) {
-			for (int i = 0; i < 50; i++) {
+		if (_iFree > 100) {
+			for (int i = 0; i < 100; i++) {
 				get = _FreeList.front();
+				//if(i <= 50)
 				get->setBehavior(*(_BehaviorManager->getParticleBehavior(TEST_ONE)));
-				get->setPosition(Vec2(_VisibleSize.width / 2 + _origin.x, _VisibleSize.height / 2 + _origin.y));
+				/*else if(i <= 150)
+				get->setBehavior(*(_BehaviorManager->getParticleBehavior(TEST_ONE_CHILD)));*/
+				get->setPosition(Vec2(_VisibleSize.width / 3 + _origin.x, _VisibleSize.height / 2 + _origin.y));
 				get->setGravity(_fGravity);
 				get->setColor(Color3B(_fRed, _fGreen, _fBlue));
 				get->setOpacity(_fOpacity);
