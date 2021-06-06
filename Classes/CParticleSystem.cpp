@@ -55,7 +55,7 @@ void CParticleSystem::setPngName(const char& pngName)
 void CParticleSystem::update(float dt)
 {
 	CParticle *get;
-	list <CParticle *>::iterator it;	
+	list <CParticle *>::iterator it;
 	if (_bEmitterOn) { // 根據 Emitter 設定的相關參數，產生相對應的分子		
 		int n = (int)(_fElpasedTime * _iNumParticles); // 到目前為止應該產生的分子個數
 		switch (_iType)
@@ -135,6 +135,48 @@ void CParticleSystem::update(float dt)
 			}
 
 			break;
+		case FREE_FLY:
+			if (n > _iGenParticles) {  // 產生的分子個數不足，產生到 n 個分子
+				for (int i = 0; i < n - _iGenParticles; i++) {
+					// 根據 Emitter 的相關參數，設定所產生分子的參數
+					if (_iFree != 0) {
+						get = _FreeList.front();
+						get->setBehavior(*(_BehaviorManager->getParticleBehavior(TEST_ONE_CHILD)));
+						get->setVelocity(_fVelocity);
+						get->setLifetime(_fLifeTime);
+						get->setGravity(_fGravity);
+						get->setPosition(_emitterPt);
+						get->setColor(Color3B(_fRed, _fGreen, _fBlue));
+						get->setOpacity(_fOpacity);
+						get->setParticleTexture(_pngName);
+						get->setSpin(_fSpin);
+						get->setSize(0.125f);
+						get->setWind(_windDir);
+						get->setWindVel(_fWindVel);
+						// 根據 _fSpread 與 _vDir 產生方向
+						dtSum += dt;
+						float t = (rand() % 1001) / 1000.0f; // 產生介於 0 到 1 間的數
+						//t = _fSpread - t * _fSpread * 2; //  產生的角度，轉成弧度
+						t = (dtSum) * M_PI;
+						if (dtSum > 2)dtSum = 0;
+						Vec2 vdir(cosf(t), sinf(t));
+						get->setDirection(vdir);
+						log("Sum = %1.2f", dtSum);
+						_FreeList.pop_front();
+						_InUsedList.push_front(get);
+						_iFree--; _iInUsed++;
+					}
+				}
+				_iGenParticles = n; // 目前已經產生 n 個分子
+
+			}
+			if (_fElpasedTime >= 1.0f) {
+				_fElpasedTime -= 1.0f;
+				if (_iGenParticles >= _iNumParticles) _iGenParticles -= _iNumParticles;
+				else _iGenParticles = 0;
+			}
+
+			break;
 		}
 		// 先計算在累加
 		_fElpasedTime += dt;
@@ -142,8 +184,14 @@ void CParticleSystem::update(float dt)
 
 	if (_iInUsed != 0) { // 有分子需要更新時
 		for (it = _InUsedList.begin(); it != _InUsedList.end(); ) {
-			if ((*it)->update(dt) || (*it)->getPosition().x < -10 || (*it)->getPosition().x > 1600) { // 分子生命週期已經到達
+			if ((*it)->update(dt)) { // 分子生命週期已經到達
 									 // 將目前這一個節點的內容放回 _FreeList
+				_FreeList.push_front((*it));
+				it = _InUsedList.erase(it); // 移除目前這一個, 
+				_iFree++; _iInUsed--;
+			}
+			else if (((*it)->getPosition().x < -10 || (*it)->getPosition().x > 1600) && _bEmitterOn)
+			{
 				_FreeList.push_front((*it));
 				it = _InUsedList.erase(it); // 移除目前這一個, 
 				_iFree++; _iInUsed--;

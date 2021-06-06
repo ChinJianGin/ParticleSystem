@@ -20,6 +20,7 @@ private:
 	int _iInUsed;  // 正在使用的 Particle 個數
 	int _iType;  // 目前控制的分子運動模式是哪一種型態
 
+	float dtSum;
 	bool _bEmitterOn; // Emitter 是否顯示
 
 	Flyweight_Factory* _BehaviorManager;

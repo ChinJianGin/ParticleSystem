@@ -259,16 +259,14 @@ Point Test_One::getDir()
 	l = (rand() % 3);
 	if (l != 0)
 	{
-		_Direction.x = i * sinf(t);
+		_Direction.x = i * sinf(t * 0.75f);
 		_Direction.y = cosf(t * i);
 	}
 	else
 	{
 		_Direction.x = sinf(t);
-		_Direction.y = sinf(t) - 0.75;
+		_Direction.y = sinf(t) - 0.9;
 	}
-	
-	log("t = %f", i);
 	return _Direction;
 }
 
@@ -277,6 +275,7 @@ Test_One_Child::Test_One_Child()
 	_fVelocity = 5.0f;
 	_fLifeTime = 2.0f;
 	_fIntensity = 1;
+	_Direction = Vec2(0, 0);
 	_fOpacity = 255;
 	_fSpin = 0;
 	_fSize = 1;
@@ -288,10 +287,5 @@ Test_One_Child::Test_One_Child()
 
 Point Test_One_Child::getDir()
 {
-	float t;
-	t = M_PI * (1 + ((rand() % 6) * 0.1));
-	log("t = %f", t);
-	_Direction.x =2 + cosf(t);
-	_Direction.y = sinf(t);
 	return _Direction;
 }
