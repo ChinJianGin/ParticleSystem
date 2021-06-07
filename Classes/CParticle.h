@@ -12,6 +12,8 @@
 #define TEST_ONE 8
 #define RAIN 9
 #define TEST_ONE_CHILD 10
+#define TEST_TWO 11
+#define TEST_THREE 12
 
 
 #define EMITTER_DEFAULT 99
@@ -42,6 +44,7 @@ private:
 	// 時間
 	float _fElapsedTime; // 分子從顯示到目前為止的時間
 	float _fDelayTime;	 // 分子顯示前的延遲時間
+	float _lifeTimeComtrol;
 
 	// 行為模式
 	int _iType;
@@ -80,6 +83,7 @@ public:
 	float WindYCal(float dt);
 
 	cocos2d::Point& getPosition();
+	cocos2d::Point getOldPosition();
 };
 
 #endif

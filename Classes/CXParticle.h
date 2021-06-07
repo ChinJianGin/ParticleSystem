@@ -12,6 +12,8 @@
 #define TEST_ONE 8
 #define RAIN 9
 #define TEST_ONE_CHILD 10
+#define TEST_TWO 11
+#define TEST_THREE 12
 #define EMITTER_DEFAULT 99
 #include "cocos2d.h"
 

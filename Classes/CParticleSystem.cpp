@@ -8,6 +8,7 @@ CParticleSystem::CParticleSystem()
 {
 	_fGravity = 0;
 	_bEmitterOn = false;
+	_firework = false;
 	_pngName = nullptr;
 	_windDir = Point(0,0);
 }
@@ -31,6 +32,8 @@ void CParticleSystem::init(cocos2d::Scene &stage)
 	_BehaviorManager->getParticleBehavior(8, *(new Test_One));
 	_BehaviorManager->getParticleBehavior(9, *(new Rain));
 	_BehaviorManager->getParticleBehavior(10, *(new Test_One_Child));
+	_BehaviorManager->getParticleBehavior(11, *(new Test_Two));
+	_BehaviorManager->getParticleBehavior(12, *(new Test_Three));
 	_BehaviorManager->getParticleBehavior(99, *(new Emitter_Default));
 	_iFree = NUMBER_PARTICLES;
 	_VisibleSize = Director::getInstance()->getVisibleSize();
@@ -156,12 +159,64 @@ void CParticleSystem::update(float dt)
 						// 根據 _fSpread 與 _vDir 產生方向
 						dtSum += dt;
 						float t = (rand() % 1001) / 1000.0f; // 產生介於 0 到 1 間的數
-						//t = _fSpread - t * _fSpread * 2; //  產生的角度，轉成弧度
 						t = (dtSum) * M_PI;
 						if (dtSum > 2)dtSum = 0;
 						Vec2 vdir(cosf(t), sinf(t));
 						get->setDirection(vdir);
-						log("Sum = %1.2f", dtSum);
+						_FreeList.pop_front();
+						_InUsedList.push_front(get);
+						_iFree--; _iInUsed++;
+					}
+				}
+				_iGenParticles = n; // 目前已經產生 n 個分子
+
+			}
+			if (_fElpasedTime >= 1.0f) {
+				_fElpasedTime -= 1.0f;
+				if (_iGenParticles >= _iNumParticles) _iGenParticles -= _iNumParticles;
+				else _iGenParticles = 0;
+			}
+
+			break;
+		case EXPLOSION:
+			if (n > _iGenParticles) {  // 產生的分子個數不足，產生到 n 個分子
+				
+				for (int i = 0; i < n - _iGenParticles; i++) {
+					// 根據 Emitter 的相關參數，設定所產生分子的參數
+					if (_iFree != 0) {		
+						dtSum += dt;
+						get = _FreeList.front();
+						if (_iInUsed < 5 && dtSum < 1 && !_firework)
+						{
+							get->setBehavior(*(_BehaviorManager->getParticleBehavior(TEST_TWO)));
+							get->setPosition(Vec2(_emitterPt.x, _emitterPt.y - 610));
+							_OldPos = get->getPosition();
+							log("old pos = %1.2f", _OldPos.x);
+							get->setParticleTexture("spark.png");
+							_firework = true;
+						}
+						else if (_iInUsed > 3 && dtSum < 3 && _firework)
+						{
+							get->setBehavior(*(_BehaviorManager->getParticleBehavior(TEST_THREE)));
+							get->setPosition(_OldPos);
+							get->setParticleTexture("comet.png");
+						}
+						else if (_iInUsed > 20 && dtSum > 5)
+						{
+							get->setBehavior(*(_BehaviorManager->getParticleBehavior(EXPLOSION)));
+							get->setPosition(_emitterPt);
+							get->setColor(Color3B(rand() % 128, rand() % 128, 128 + rand() % 128));
+							get->setParticleTexture(_pngName);
+							_firework = false;							
+						}						
+						if (dtSum > 6)dtSum = 0;
+						log("dt SUM = %d", _iInUsed);
+						get->setGravity(_fGravity);						
+						get->setOpacity(_fOpacity);						
+						get->setSpin(_fSpin);
+						get->setSize(0.125f);
+						get->setWind(_windDir);
+						get->setWindVel(_fWindVel);
 						_FreeList.pop_front();
 						_InUsedList.push_front(get);
 						_iFree--; _iInUsed++;
@@ -180,6 +235,7 @@ void CParticleSystem::update(float dt)
 		}
 		// 先計算在累加
 		_fElpasedTime += dt;
+
 	}
 
 	if (_iInUsed != 0) { // 有分子需要更新時
@@ -519,4 +575,9 @@ void CParticleSystem::setWindVel(float vel)
 			(*it)->setWindVel(_fWindVel);
 		}
 	}
+}
+
+void CParticleSystem::setInUsedBehavior(CParticle* it)
+{	
+	_OldPos = it->getOldPosition();
 }

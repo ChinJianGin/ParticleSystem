@@ -121,3 +121,24 @@ public:
 private:
 
 };
+
+
+class Test_Two : public CXParticle
+{
+public:
+	Test_Two();
+	~Test_Two() {}
+	Point getDir() override;
+private:
+
+};
+
+class Test_Three : public CXParticle
+{
+public:
+	Test_Three();
+	~Test_Three() {}
+	Point getDir() override;
+private:
+
+};

@@ -26,6 +26,7 @@ USING_NS_CC;
 CParticle::CParticle()
 {
 	_fGravity = 0;
+	_lifeTimeComtrol = 0;
 }
 
 
@@ -58,7 +59,6 @@ bool CParticle::update(float dt)
 				float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
 				_Pos.x += ((_Direction.x * _fVelocity) + (this->WindXCal(dt)/* * _WindVel*/)) * dt * PIXEL_PERM;				
 				_Pos.y += ((_Direction.y * _fVelocity + tt) + (this->WindYCal(dt))) * dt * PIXEL_PERM;
-				log("%1.2f", _Pos.y);
 				_Particle->setPosition(_Pos);
 			}
 			else {
@@ -251,7 +251,6 @@ bool CParticle::update(float dt)
 			}
 			else
 			{
-				log("windvel %f", _WindVel);
 				_Pos.x += _Direction.x * _fVelocity * dt * PIXEL_PERM;
 				float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
 				_Pos.y += (_Direction.y * _fVelocity + tt) * dt * PIXEL_PERM;
@@ -384,8 +383,46 @@ bool CParticle::update(float dt)
 				float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
 				_Pos.x += ((_Direction.x * _fVelocity) + (this->WindXCal(dt) * _WindVel)) * dt * PIXEL_PERM;
 				_Pos.y += ((_Direction.y * _fVelocity + tt) + (this->WindYCal(dt))) * dt * PIXEL_PERM;
-				//log("%1.2f", (this->WindYCal(dt) * _WindDir.y));
+				_Particle->setPosition(_Pos);				
+			}
+			else
+			{
+				_Pos.x += _Direction.x * _fVelocity * dt * PIXEL_PERM;
+				float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
+				_Pos.y += (_Direction.y * _fVelocity + tt) * dt * PIXEL_PERM;
+				_Particle->setPosition(_Pos);				
+			}
+			_Particle->setRotation(this->calSpin(dt));	
+			
+			//log("Old Pos = %1.2f", _OldPos.x);
+		}
+		break;
+	case TEST_TWO:
+		if (!_bVisible && _fElapsedTime >= _fDelayTime) {
+			_fElapsedTime = _fElapsedTime - _fDelayTime; // 重新開始計時
+			_bVisible = true;
+			_Particle->setVisible(_bVisible);
+			_Particle->setColor(_color);
+			_Particle->setPosition(_Pos);
+		}
+		else if (_fElapsedTime > _fLifeTime) {
+			_bVisible = false;
+			_Particle->setVisible(_bVisible);
+			return true; // 分子生命週期已經結束
+		}
+		else {
+			sint = sinf(M_PI * _fElapsedTime / _fLifeTime);
+			cost = cosf(M_PI_2 * _fElapsedTime / _fLifeTime);
+			_Particle->setScale(1 + sint * 2.0);
+			_Particle->setOpacity(_fOpacity * cost);
+			_Particle->setColor(_color);
+			if (_WindDir != Point(0, 0))
+			{
+				float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
+				_Pos.x += ((_Direction.x * _fVelocity) + (this->WindXCal(dt) * _WindVel)) * dt * PIXEL_PERM;
+				_Pos.y += ((_Direction.y * _fVelocity + tt) + (this->WindYCal(dt))) * dt * PIXEL_PERM;
 				_Particle->setPosition(_Pos);
+				_OldPos = _Pos;
 			}
 			else
 			{
@@ -393,8 +430,47 @@ bool CParticle::update(float dt)
 				float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
 				_Pos.y += (_Direction.y * _fVelocity + tt) * dt * PIXEL_PERM;
 				_Particle->setPosition(_Pos);
+				_OldPos = _Pos;
 			}
 			_Particle->setRotation(this->calSpin(dt));
+		}
+		break;
+	case TEST_THREE:		
+		if (!_bVisible && _fElapsedTime >= _fDelayTime) {
+			_fElapsedTime = _fElapsedTime - _fDelayTime; // 重新開始計時
+			_bVisible = true;
+			_Particle->setVisible(_bVisible);
+			_Particle->setColor(_color);
+			_Particle->setPosition(_Pos);
+		}
+		else if (_fElapsedTime > _fLifeTime) {
+			_bVisible = false;
+			_Particle->setVisible(_bVisible);
+			return true; // 分子生命週期已經結束
+		}
+		else {
+			sint = sinf(M_PI_2 * _fElapsedTime / _fLifeTime ) + _lifeTimeComtrol;
+			cost = sinf(M_PI_2 * _fElapsedTime / _fLifeTime ) - _lifeTimeComtrol;
+			_lifeTimeComtrol += 0.002;
+			_Particle->setScale(1 + sint * 2.0);
+			_Particle->setOpacity(_fOpacity * cost);
+			_Particle->setColor(_color);
+			if (_WindDir != Point(0, 0))
+			{
+				float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);
+				_Pos.x += ((_Direction.x * _fVelocity) + (this->WindXCal(dt) * _WindVel)) * dt * PIXEL_PERM;
+				_Pos.y += ((_Direction.y * _fVelocity + tt) + (this->WindYCal(dt))) * dt * PIXEL_PERM;
+				_Particle->setPosition(_Pos);
+			}
+			else
+			{
+				float tt = GRAVITY_Y(_fElapsedTime, dt, _fGravity);				
+				_Pos.x += _Direction.x * _fVelocity * dt * PIXEL_PERM;					
+				_Pos.y += (_Direction.y * _fVelocity + tt) * dt * PIXEL_PERM;
+				_Particle->setPosition(_Pos);
+			}
+			_Particle->setRotation(this->calSpin(dt));
+			if (_lifeTimeComtrol > 0.1)_lifeTimeComtrol = 0;
 		}
 		break;
 	}
@@ -498,7 +574,6 @@ float CParticle::WindXCal(float dt)
 		windxVel = ((-_WindVel) * _fElapsedTime) + ((0.5f * dt) * (_WindVel + ((_WindDir.x * _WindVel) * dt)));
 	else if (_WindDir.x > 0)
 		windxVel = (_WindVel * _fElapsedTime) + ((0.5f * dt) * (_WindVel + ((_WindDir.x * _WindVel) * dt)));
-	log("%1.2f", windxVel);
 	return	windxVel;
 }
 
@@ -512,4 +587,9 @@ float CParticle::WindYCal(float dt)
 cocos2d::Point& CParticle::getPosition()
 {
 	return this->_Pos;
+}
+
+cocos2d::Point CParticle::getOldPosition()
+{
+	return this->_OldPos;
 }

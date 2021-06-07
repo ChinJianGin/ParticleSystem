@@ -289,3 +289,41 @@ Point Test_One_Child::getDir()
 {
 	return _Direction;
 }
+
+Test_Two::Test_Two()
+{
+	_fVelocity = 5.0f;
+	_fLifeTime = 3.0f;
+	_Direction = Point(0, 2);
+	_fIntensity = 1;
+	_fOpacity = 255;
+	_fSize = 1;
+	_color = Color3B(64 + rand() % 128, 64 + rand() % 128, 64 + rand() % 128);
+	_fElapsedTime = 0;
+	_fGravity = 0;
+	_iType = TEST_TWO;
+}
+
+Point Test_Two::getDir()
+{
+	return _Direction;
+}
+
+Test_Three::Test_Three()
+{
+	_fVelocity = 4.98f;
+	_fLifeTime = 2.5f;
+	_Direction = Point(0, 2);
+	_fIntensity = 1;
+	_fOpacity = 255;
+	_fSize = 1;
+	_color = Color3B(64 + rand() % 128, 64 + rand() % 128, 64 + rand() % 128);
+	_fElapsedTime = 0;
+	_fGravity = 0;
+	_iType = TEST_THREE;
+}
+
+Point Test_Three::getDir()
+{
+	return _Direction;
+}
