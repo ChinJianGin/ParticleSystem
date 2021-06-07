@@ -9,6 +9,7 @@ CParticleSystem::CParticleSystem()
 	_fGravity = 0;
 	_bEmitterOn = false;
 	_firework = false;
+	_control = false;
 	_pngName = nullptr;
 	_windDir = Point(0,0);
 }
@@ -118,8 +119,8 @@ void CParticleSystem::update(float dt)
 						get->setWind(_windDir);
 						get->setWindVel(_fWindVel);
 						// 根據 _fSpread 與 _vDir 產生方向
-						float t = (rand() % 1001) / 1000.0f; // 產生介於 0 到 1 間的數
-						t = _fSpread - t * _fSpread * 2; //  產生的角度，轉成弧度
+						float t = (rand() % 1001) / 1000.0f;
+						t = _fSpread - t * _fSpread * 2;
 						t = (_fDir * 2 + t) * M_PI_2 / 180.0f;
 						Vec2 vdir(cosf(t), (-sinf(t)));
 						get->setDirection(vdir);
@@ -184,10 +185,10 @@ void CParticleSystem::update(float dt)
 				for (int i = 0; i < n - _iGenParticles; i++) {
 					// 根據 Emitter 的相關參數，設定所產生分子的參數
 					if (_iFree != 0) {		
-						dtSum += dt;
+						dtSum += dt;	
 						get = _FreeList.front();
 						if (_iInUsed < 5 && dtSum < 1 && !_firework)
-						{
+						{							
 							get->setBehavior(*(_BehaviorManager->getParticleBehavior(TEST_TWO)));
 							get->setPosition(Vec2(_emitterPt.x, _emitterPt.y - 610));
 							_OldPos = get->getPosition();
@@ -201,13 +202,19 @@ void CParticleSystem::update(float dt)
 							get->setPosition(_OldPos);
 							get->setParticleTexture("comet.png");
 						}
-						else if (_iInUsed > 20 && dtSum > 5)
+						else if (_iInUsed > 20 && dtSum > 5 && _firework)
 						{
-							get->setBehavior(*(_BehaviorManager->getParticleBehavior(EXPLOSION)));
-							get->setPosition(_emitterPt);
-							get->setColor(Color3B(rand() % 128, rand() % 128, 128 + rand() % 128));
-							get->setParticleTexture(_pngName);
-							_firework = false;							
+							_firework = false;
+							for (int i = 0; i < 50; i++) {
+								get = _FreeList.front();
+								get->setBehavior(*(_BehaviorManager->getParticleBehavior(EXPLOSION)));
+								get->setPosition(_emitterPt);
+								get->setColor(Color3B(rand() % 128, rand() % 128, 128 + rand() % 128));
+								get->setParticleTexture(_pngName);
+								_FreeList.pop_front();
+								_InUsedList.push_front(get);
+								_iFree--; _iInUsed++;
+							}												
 						}						
 						if (dtSum > 6)dtSum = 0;
 						log("dt SUM = %d", _iInUsed);
@@ -231,6 +238,38 @@ void CParticleSystem::update(float dt)
 				else _iGenParticles = 0;
 			}
 
+			break;
+		case HEARTSHAPE:
+			if (n > _iGenParticles) {  // 產生的分子個數不足，產生到 n 個分子
+				for (int i = 0; i < n - _iGenParticles; i++) {
+					// 根據 Emitter 的相關參數，設定所產生分子的參數
+					if (_iFree != 0) {
+						get = _FreeList.front();
+						get->setBehavior(*(_BehaviorManager->getParticleBehavior(RANDOMS_FALLING)));
+						get->setVelocity(-_fVelocity);
+						get->setLifetime(_fLifeTime);
+						get->setGravity(4.0f);
+						get->setPosition(Vec2(_emitterPt.x +((rand() % 31) - 15), _emitterPt.y));
+						get->setColor(Color3B(255, 68, 0));
+						get->setOpacity(_fOpacity);
+						get->setParticleTexture("cloud.png");
+						get->setSpin(_fSpin);
+						get->setSize(0.125f);
+						get->setWind(_windDir);
+						get->setWindVel(_fWindVel);
+						_FreeList.pop_front();
+						_InUsedList.push_front(get);
+						_iFree--; _iInUsed++;
+					}
+				}
+				_iGenParticles = n; // 目前已經產生 n 個分子
+
+			}
+			if (_fElpasedTime >= 1.0f) {
+				_fElpasedTime -= 1.0f;
+				if (_iGenParticles >= _iNumParticles) _iGenParticles -= _iNumParticles;
+				else _iGenParticles = 0;
+			}
 			break;
 		}
 		// 先計算在累加

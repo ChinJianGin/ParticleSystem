@@ -24,6 +24,7 @@ private:
 	bool _bEmitterOn; // Emitter ¬O§_Εγ₯ά
 
 	bool _firework;
+	bool _control;
 
 	Flyweight_Factory* _BehaviorManager;
 
