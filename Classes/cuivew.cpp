@@ -9,6 +9,7 @@ extern cocos2d::Size fSize;
 CUIView::CUIView()
 {
 	_uiRoot = nullptr;
+    _uiRoot_2 = nullptr;
     _stage = nullptr;
     _ParticleControl = nullptr;
     _GravityBMValue = nullptr;
@@ -55,13 +56,13 @@ void CUIView::setModel(CParticleSystem& model)
 }
 
 void CUIView::setProperty(std::string uicsbname, cocos2d::Size vsize, cocos2d::Scene& stage)
-{
-	_uiRoot = CSLoader::createNode(uicsbname);
-	stage.addChild(_uiRoot);
-	_uiRoot->setPosition(Vec2(0,0));
-    _stage = &stage;
-    _size = vsize;
-    init();
+{    
+        _uiRoot = CSLoader::createNode(uicsbname);
+        stage.addChild(_uiRoot);
+        _uiRoot->setPosition(Vec2(0, 0));
+        _stage = &stage;
+        _size = vsize;
+        init();
 }
 
 void CUIView::init() 
@@ -243,6 +244,15 @@ void CUIView::init()
     _DifferentEffect[2] = CSwitchButton::create();
     _DifferentEffect[2]->setButtonInfo("emitteroff.png", "emitteroff.png", "emitteron.png", loc);
     _stage->addChild(_DifferentEffect[2], 2);
+
+    //Reset button
+    emiterpos = dynamic_cast<Sprite*>(_uiRoot->getChildByName("resetbtn"));
+    loc = emiterpos->getPosition();
+    emiterpos->setVisible(false);
+    _bReset = false;
+    _ResetBtn = CSwitchButton::create();
+    _ResetBtn->setButtonInfo("emitteroff.png", "emitteroff.png", "emitteron.png", loc);
+    _stage->addChild(_ResetBtn, 2);
 }
 
 
@@ -255,7 +265,7 @@ void CUIView::onTouchBegan(const cocos2d::Point& tPoint)
     for(int i = 0; i < TEXTURE_AMOUNT && !texturBtn; i++)
         texturBtn = _TexturSwitchBtn[i]->touchesBegan(tPoint);
     // 沒有顯示 Emitter，而且沒有按在 Emitter 切換按鈕上，才讓 touch 可以點選顯示分子
-    if (!_emitterSwitchBtn->touchesBegan(tPoint) && !_bEmitterOn && !_DifferentEffect[0]->touchesBegan(tPoint) /*&& _differOn*/ && !texturBtn) _ParticleControl->onTouchesBegan(tPoint);
+    if (!_emitterSwitchBtn->touchesBegan(tPoint) && !_bEmitterOn && !_DifferentEffect[0]->touchesBegan(tPoint) && !_ResetBtn->touchesBegan(tPoint) && !texturBtn) _ParticleControl->onTouchesBegan(tPoint);
     for (int i = 0; i < EFFECT_AMOUNT && !_differOn; i++)
     {
         _differOn = _DifferentEffect[i]->touchesBegan(tPoint);
@@ -266,7 +276,10 @@ void CUIView::onTouchBegan(const cocos2d::Point& tPoint)
             _ParticleControl->onTouchesBegan(tPoint);
         }
     }
-       
+    if (_ResetBtn->touchesBegan(tPoint))
+    {
+        _bReset = _ResetBtn->touchesBegan(tPoint);
+    }
     
 }
 
@@ -278,7 +291,11 @@ void CUIView::onTouchMoved(const cocos2d::Point& tPoint)
         }
     }
     // 沒有顯示 Emitter，而且沒有按在 Emitter 切換按鈕上，才讓 touch 可以點選顯示分子
-    if (!_emitterSwitchBtn->touchesMoved(tPoint) && !_bEmitterOn) _ParticleControl->onTouchesMoved(tPoint);
+    if (!_emitterSwitchBtn->touchesMoved(tPoint) && !_bEmitterOn && !_ResetBtn->touchesMoved(tPoint))
+    {
+        _bReset = _ResetBtn->touchesMoved(tPoint);
+        _ParticleControl->onTouchesMoved(tPoint);
+    }
 }
 
 void CUIView::onTouchEnded(const cocos2d::Point& tPoint)
@@ -311,6 +328,11 @@ void CUIView::onTouchEnded(const cocos2d::Point& tPoint)
     {
         _differOn = false;
         for (int i = 0; i < EFFECT_AMOUNT; i++)_DifferentEffect[i]->touchesEnded(tPoint);
+    }
+    if (_bReset)
+    {
+        _bReset = !_ResetBtn->touchesEnded(tPoint);
+        Reset();
     }
 }
 
@@ -491,4 +513,9 @@ void CUIView::WindVelEvent(cocos2d::Ref* sender, cocos2d::ui::Slider::EventType 
         _WindVelBMValue->setString(StringUtils::format("%1.1f", iWindVel));
         _ParticleControl->setWindVel(iWindVel);
     }
+}
+
+void CUIView::Reset()
+{
+
 }

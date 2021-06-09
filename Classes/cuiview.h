@@ -14,6 +14,7 @@ class CUIView
 private:
 	// 建立控制 particle system 所需的操作介面
 	cocos2d::Node* _uiRoot;
+	cocos2d::Node* _uiRoot_2;
 	cocos2d::Scene* _stage;
 	cocos2d::Size _size; //開啟的視窗大小
 
@@ -50,6 +51,10 @@ private:
 	CSwitchButton* _DifferentEffect[EFFECT_AMOUNT];
 	bool _differOn;
 
+	//Reset button
+	CSwitchButton* _ResetBtn;
+	bool _bReset;
+
 public:
 	CUIView();
 
@@ -74,6 +79,7 @@ public:
 	void WindEvent(cocos2d::Ref* sender, cocos2d::ui::Slider::EventType type);
 	void WindVelEvent(cocos2d::Ref* sender, cocos2d::ui::Slider::EventType type);
 
+	void Reset();
 	// touch 事件
 	void onTouchBegan(const cocos2d::Point& tPoint);
 	void onTouchMoved(const cocos2d::Point& tPoint); //觸碰移動事件

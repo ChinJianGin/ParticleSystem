@@ -190,7 +190,7 @@ void CParticleSystem::update(float dt)
 						if (_iInUsed < 5 && dtSum < 1 && !_firework)
 						{							
 							get->setBehavior(*(_BehaviorManager->getParticleBehavior(TEST_TWO)));
-							get->setPosition(Vec2(_emitterPt.x, _emitterPt.y - 610));
+							get->setPosition(Vec2(_emitterPt.x - 5, _emitterPt.y - 660));
 							_OldPos = get->getPosition();
 							log("old pos = %1.2f", _OldPos.x);
 							get->setParticleTexture("spark.png");
@@ -594,15 +594,14 @@ void CParticleSystem::setWind(float wind)
 	float t;
 	t = wind * M_PI;
 	_windDir.x = cosf(t);
-	_windDir.y = sinf(t);		
+	_windDir.y = sinf(t);
+	if (wind == 0)_windDir = Point(0, 0);
 	list <CParticle*>::iterator it;
 	if (_iInUsed != 0) { // 有分子需要更新時
 		for (it = _InUsedList.begin(); it != _InUsedList.end(); it++) {
 			(*it)->setWind(_windDir);
 		}
 	}
-	//log("x = %1.4f", _windDir.x);
-	//log("y = %1.1f", _windDir.y);
 }
 
 void CParticleSystem::setWindVel(float vel)

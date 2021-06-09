@@ -554,6 +554,7 @@ float CParticle::calSpin(float dt)
 {
 	float degree = _Particle->getRotation();
 	degree += dt * _fSpin;
+	if (_fSpin == 0)degree = 0;
 	return degree;
 }
 

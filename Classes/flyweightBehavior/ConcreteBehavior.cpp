@@ -16,10 +16,6 @@ Stay_For_Two_Seconds::Stay_For_Two_Seconds()
 
 Point Stay_For_Two_Seconds::getDir()
 {
-	/*float t;
-	t = 2.0f * M_PI * (rand() % 1000) / 1000.0f;
-	_Direction.x = cosf(t);
-	_Direction.y = sinf(t);*/
 	return _Direction;
 }
 
@@ -95,7 +91,6 @@ Explosion::Explosion()
 	_fSpin = 0;
 	_fSize = 1;
 	_color = Color3B(64 + rand() % 128, 64 + rand() % 128,64 + rand() % 128);
-	//_color = Color3B(255, 255, 255);
 	_fElapsedTime = 0;
 	_fGravity = 0;
 	_iType = EXPLOSION;
@@ -120,7 +115,6 @@ HeartShape::HeartShape()
 	_fSpin = 0;
 	_fSize = 1;
 	_color = Color3B(128 + rand() % 128, 128 + rand() % 128, 128 + rand() % 128);
-	//_color = Color3B(255, 255, 255);
 	_fElapsedTime = 0;
 	_fGravity = 0;
 	_iType = HEARTSHAPE;
@@ -147,7 +141,6 @@ Butterfly::Butterfly()
 	_fSpin = 0;
 	_fSize = 1;
 	_color = Color3B(128 + rand() % 128, 128 + rand() % 128, 128 + rand() % 128);
-	//_color = Color3B(255, 255, 255);
 	_fElapsedTime = 0;
 	_fGravity = 0;
 	_iType = BUTTERFLYSHAPE;
@@ -173,7 +166,6 @@ Split::Split()
 	_fSpin = 0;
 	_fSize = 1;
 	_color = Color3B(128 + rand() % 128, 128 + rand() % 128, 128 + rand() % 128);
-	//_color = Color3B(255, 255, 255);
 	_fElapsedTime = 0;
 	_fGravity = 0;
 	_iType = SPLIT;
@@ -197,7 +189,6 @@ Cannabis::Cannabis()
 	_fSpin = 0;
 	_fSize = 1;
 	_color = Color3B(128 + rand() % 128, 128 + rand() % 128, 128 + rand() % 128);
-	//_color = Color3B(255, 255, 255);
 	_fElapsedTime = 0;
 	_fGravity = 0;
 	_iType = CANNABIS;
