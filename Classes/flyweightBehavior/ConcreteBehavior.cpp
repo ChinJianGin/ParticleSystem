@@ -236,7 +236,7 @@ Test_One::Test_One()
 	_fOpacity = 255;
 	_fSpin = 0;
 	_fSize = 1;
-	_color = Color3B(128 + rand() % 128, 128 + rand() % 128, 128 + rand() % 128);
+	_color = Color3B(251,126,20);
 	_fElapsedTime = 0;
 	_fGravity = 0;
 	_iType = TEST_ONE;
@@ -270,7 +270,7 @@ Test_One_Child::Test_One_Child()
 	_fOpacity = 255;
 	_fSpin = 0;
 	_fSize = 1;
-	_color = Color3B(128 + rand() % 128, 128 + rand() % 128, 128 + rand() % 128);
+	_color = Color3B(251,126,20);
 	_fElapsedTime = 0;
 	_fGravity = 0;
 	_iType = TEST_ONE;

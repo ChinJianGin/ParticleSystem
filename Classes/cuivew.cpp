@@ -253,6 +253,12 @@ void CUIView::init()
     _ResetBtn = CSwitchButton::create();
     _ResetBtn->setButtonInfo("emitteroff.png", "emitteroff.png", "emitteron.png", loc);
     _stage->addChild(_ResetBtn, 2);
+
+    // Slider of Size
+    auto* SizeSlider = dynamic_cast<cocos2d::ui::Slider*>(_uiRoot->getChildByName("Slider_Size"));
+    SizeSlider->addEventListener(CC_CALLBACK_2(CUIView::SizeEvent, this));
+    SizeSlider->setMaxPercent(100); 	// 將 0 到 100 對應到 0 到 360 之間
+    _SizeBMValue = dynamic_cast<cocos2d::ui::TextBMFont*>(_uiRoot->getChildByName("SizeBMFont"));
 }
 
 
@@ -512,6 +518,18 @@ void CUIView::WindVelEvent(cocos2d::Ref* sender, cocos2d::ui::Slider::EventType 
         float iWindVel = percent / 10; // 0 到 20 之間
         _WindVelBMValue->setString(StringUtils::format("%1.1f", iWindVel));
         _ParticleControl->setWindVel(iWindVel);
+    }
+}
+
+void CUIView::SizeEvent(cocos2d::Ref* sender, cocos2d::ui::Slider::EventType type)
+{
+    if (type == Slider::EventType::ON_PERCENTAGE_CHANGED)
+    {
+        const Slider* slider = dynamic_cast<Slider*>(sender);
+        int percent = slider->getPercent();
+        float fSize = percent / 20.0f;
+        _SizeBMValue->setString(StringUtils::format("%2.1f", fSize));
+        _ParticleControl->setSize(fSize);
     }
 }
 

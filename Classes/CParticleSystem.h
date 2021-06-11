@@ -21,6 +21,7 @@ private:
 	int _iType;  // 目前控制的分子運動模式是哪一種型態
 
 	float dtSum;
+	float _fSize;
 	bool _bEmitterOn; // Emitter 是否顯示
 
 	bool _firework;
@@ -72,6 +73,8 @@ public:
 	void setWindVel(float vel);
 
 	void setInUsedBehavior(CParticle* it);
+
+	void setSize(float size);
 };
 
 #endif

@@ -79,7 +79,7 @@ void CParticleSystem::update(float dt)
 						get->setOpacity(_fOpacity);
 						get->setParticleTexture(_pngName);
 						get->setSpin(_fSpin);
-						get->setSize(0.125f);
+						get->setSize(_fSize);
 						get->setWind(_windDir);
 						get->setWindVel(_fWindVel);
 						// 根據 _fSpread 與 _vDir 產生方向
@@ -154,7 +154,7 @@ void CParticleSystem::update(float dt)
 						get->setOpacity(_fOpacity);
 						get->setParticleTexture(_pngName);
 						get->setSpin(_fSpin);
-						get->setSize(0.125f);
+						get->setSize(_fSize);
 						get->setWind(_windDir);
 						get->setWindVel(_fWindVel);
 						// 根據 _fSpread 與 _vDir 產生方向
@@ -254,7 +254,7 @@ void CParticleSystem::update(float dt)
 						get->setOpacity(_fOpacity);
 						get->setParticleTexture("cloud.png");
 						get->setSpin(_fSpin);
-						get->setSize(0.125f);
+						get->setSize(_fSize);
 						get->setWind(_windDir);
 						get->setWindVel(_fWindVel);
 						_FreeList.pop_front();
@@ -498,13 +498,9 @@ void CParticleSystem::onTouchesBegan(const cocos2d::Point &touchPoint)
 		if (_iFree > 100) {
 			for (int i = 0; i < 100; i++) {
 				get = _FreeList.front();
-				//if(i <= 50)
 				get->setBehavior(*(_BehaviorManager->getParticleBehavior(TEST_ONE)));
-				/*else if(i <= 150)
-				get->setBehavior(*(_BehaviorManager->getParticleBehavior(TEST_ONE_CHILD)));*/
 				get->setPosition(Vec2(_VisibleSize.width / 3 + _origin.x, _VisibleSize.height / 2 + _origin.y));
 				get->setGravity(_fGravity);
-				get->setColor(Color3B(_fRed, _fGreen, _fBlue));
 				get->setOpacity(_fOpacity);
 				get->setLifetime(_fLifeTime);
 				get->setParticleTexture(_pngName);
@@ -618,4 +614,9 @@ void CParticleSystem::setWindVel(float vel)
 void CParticleSystem::setInUsedBehavior(CParticle* it)
 {	
 	_OldPos = it->getOldPosition();
+}
+
+void CParticleSystem::setSize(float size)
+{
+	_fSize = size;
 }

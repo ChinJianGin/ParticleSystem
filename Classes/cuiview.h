@@ -32,6 +32,7 @@ private:
 	cocos2d::ui::TextBMFont* _BlueBMValue;
 	cocos2d::ui::TextBMFont* _WindBMValue;
 	cocos2d::ui::TextBMFont* _WindVelBMValue;
+	cocos2d::ui::TextBMFont* _SizeBMValue;
 
 	// 選擇不同的分子型態，用在 Emitter 沒有開啟的狀態
 	cocos2d::ui::TextBMFont* _TypeBMValue;
@@ -78,6 +79,8 @@ public:
 
 	void WindEvent(cocos2d::Ref* sender, cocos2d::ui::Slider::EventType type);
 	void WindVelEvent(cocos2d::Ref* sender, cocos2d::ui::Slider::EventType type);
+
+	void SizeEvent(cocos2d::Ref* sender, cocos2d::ui::Slider::EventType type);
 
 	void Reset();
 	// touch 事件
